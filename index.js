@@ -4,12 +4,36 @@ const supabaseClient = window.supabase.createClient(
   "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN"
 );
 
+// 🔍 Verificar si el correo existe en la tabla perfiles
+async function verificarCorreoExiste(email) {
+  const { data, error } = await supabaseClient
+    .from("perfiles")
+    .select("email")
+    .eq("email", email)
+    .maybeSingle();
+
+  if (error) {
+    console.error("Error verificando correo:", error.message);
+    return false;
+  }
+
+  return data !== null;
+}
+
 // Registro de usuario
 async function registrar() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const nombre = document.getElementById("nombre").value;
   const edad = document.getElementById("edad").value;
+
+  // 🔥 Validar si el correo ya existe
+  const existe = await verificarCorreoExiste(email);
+
+  if (existe) {
+    alert("Este correo ya está registrado");
+    return;
+  }
 
   const { data, error } = await supabaseClient.auth.signUp({
     email,
@@ -45,9 +69,6 @@ async function login() {
   } else {
     const user = data.user;
 
-    // ✅ FIX 1: Tomar nombre y edad desde los metadatos del usuario
-    // (los guardaste en signUp con options.data)
-    // ya NO los leas desde el formulario porque esos campos están vacíos al hacer login
     const nombre = user.user_metadata?.nombre || "";
     const edad = user.user_metadata?.edad || null;
 
@@ -58,8 +79,6 @@ async function login() {
       .eq("identificacion", user.id)
       .single();
 
-    // ✅ FIX 2: El error "PGRST116" significa "no encontró filas", eso es normal
-    // Solo mostramos error en consola si es un error real (no el de "no existe perfil")
     if (perfilError && perfilError.code !== "PGRST116") {
       console.error("Error al consultar perfil:", perfilError.message);
     }
@@ -70,8 +89,9 @@ async function login() {
         .insert([
           {
             identificacion: user.id,
-            nombre: nombre,       // ✅ ahora viene de user_metadata
-            edad: edad,           // ✅ ahora viene de user_metadata
+            email: user.email, // 🔥 GUARDAR EMAIL (IMPORTANTE)
+            nombre: nombre,
+            edad: edad,
             tipo_suscripcion: "Pendiente",
             fecha_registro: new Date()
           }
@@ -80,7 +100,7 @@ async function login() {
       if (insertError) {
         console.error("Error al crear perfil:", insertError.message);
         alert("Hubo un error al crear tu perfil: " + insertError.message);
-        return; // ✅ FIX 3: Detener si falló el insert, no redirigir
+        return;
       }
     }
 
@@ -88,5 +108,27 @@ async function login() {
   }
 }
 
+// 🔐 Recuperar contraseña (SIMULADO)
+async function recuperarPassword() {
+  const email = document.getElementById("emailRecuperar").value;
+
+  if (!email) {
+    alert("Por favor ingresa tu correo");
+    return;
+  }
+
+  const existe = await verificarCorreoExiste(email);
+
+  if (existe) {
+    // ✅ Si el correo SÍ existe
+    alert("Se ha enviado un enlace de recuperación a tu correo");
+  } else {
+    // ❌ AQUÍ VA LO QUE TE PIDEN
+    alert("El correo no está registrado");
+  }
+}
+
+// Exportar funciones
 window.registrar = registrar;
 window.login = login;
+window.recuperarPassword = recuperarPassword;
