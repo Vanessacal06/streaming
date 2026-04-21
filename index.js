@@ -43,25 +43,39 @@ async function login() {
   if (error) {
     alert("Error en login: " + error.message);
   } else {
-    // Una vez logueado, obtenemos el usuario actual
     const user = data.user;
 
-    // Insertar perfil en la tabla 'perfiles'
-    const nombre = document.getElementById("nombre").value;
-    const edad = document.getElementById("edad").value;
-
-    const { error: insertError } = await supabaseClient
+    // Verificar si ya existe un perfil
+    const { data: perfilExistente, error: perfilError } = await supabaseClient
       .from("perfiles")
-      .insert([
-        {
-          id_usuario: user.id, // ID único del usuario en Supabase
-          nombre: nombre,
-          edad: edad
-        }
-      ]);
+      .select("*")
+      .eq("identificación", user.id)
+      .single();
 
-    if (insertError) {
-      console.error("Error al crear perfil:", insertError.message);
+    if (perfilError) {
+      console.error("Error al consultar perfil:", perfilError.message);
+    }
+
+    if (!perfilExistente) {
+      // Insertar perfil en la tabla 'perfiles' si no existe
+      const nombre = document.getElementById("nombre").value;
+      const edad = document.getElementById("edad").value;
+
+      const { error: insertError } = await supabaseClient
+        .from("perfiles")
+        .insert([
+          {
+            identificación: user.id, // columna correcta de tu tabla
+            nombre: nombre,
+            edad: edad,
+            tipo_suscripcion: "Pendiente", // valor inicial hasta que elija plan
+            fecha_registro: new Date()
+          }
+        ]);
+
+      if (insertError) {
+        console.error("Error al crear perfil:", insertError.message);
+      }
     }
 
     // Redirige al flujo de planes
@@ -72,4 +86,3 @@ async function login() {
 // Exportar funciones al ámbito global
 window.registrar = registrar;
 window.login = login;
-
