@@ -1,6 +1,7 @@
+// Conexión a Supabase
 const supabaseClient = window.supabase.createClient(
-  "TU_SUPABASE_URL",
-  "TU_SUPABASE_ANON_KEY"
+  "TU_SUPABASE_URL",       // Reemplaza con tu URL real
+  "TU_SUPABASE_ANON_KEY"   // Reemplaza con tu anon key real
 );
 
 // Registro de usuario
@@ -14,7 +15,11 @@ async function registrar() {
     email,
     password,
     options: {
-      emailRedirectTo: "https://vanessacal06.github.io/streaming/"
+      emailRedirectTo: "hhttps://vanessacal06.github.io/streaming/",
+      data: {
+        nombre: nombre,
+        edad: edad
+      }
     }
   });
 
@@ -38,6 +43,10 @@ async function login() {
   if (error) {
     alert("Error en login: " + error.message);
   } else {
+    // Redirige al flujo de planes
     window.location.href = "planes.html";
   }
 }
+
+
+
