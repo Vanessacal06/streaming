@@ -1,8 +1,9 @@
 // Conexión a Supabase
 const supabaseClient = window.supabase.createClient(
-  "TU_SUPABASE_URL",       // Reemplaza con tu URL real
-  "TU_SUPABASE_ANON_KEY"   // Reemplaza con tu anon key real
+  "https://wokruyihvhbkcgvlhsnk.supabase.co/rest/v1/",   // tu Project URL real
+  "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN" // tu anon key real
 );
+
 
 // Registro de usuario
 async function registrar() {
