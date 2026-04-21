@@ -44,7 +44,7 @@ async function seleccionarPlan(idPlan, nombrePlan) {
       id_suscripcion: idPlan,
       tipo_suscripcion: nombrePlan
     })
-    .eq("identificación", user.id);
+    .eq("identificacion", user.id); // columna correcta en tu tabla
 
   if (error) {
     alert("Error al actualizar suscripción: " + error.message);
