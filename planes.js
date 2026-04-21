@@ -38,11 +38,10 @@ async function seleccionarPlan(idPlan, nombrePlan) {
     return;
   }
 
-  // Actualizar perfil del usuario
   const { error } = await supabaseClient
     .from("perfiles")
     .update({
-      id_suscripcion: idPlan,       // asegúrate que esta columna exista en tu tabla
+      id_suscripcion: idPlan,       // columna existente en tu tabla
       tipo_suscripcion: nombrePlan  // guarda el nombre del plan
     })
     .eq("identificacion", user.id); // columna UUID correcta
