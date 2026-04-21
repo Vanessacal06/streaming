@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #111;
+  color: #fff;
+  margin: 0;
+  padding: 20px;
+}
+
+h1, h2 {
+  color: #e50914; /* rojo estilo Netflix */
+}
+
+section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #222;
+  border-radius: 8px;
+}
+
+input, button {
+  display: block;
+  margin: 10px 0;
+  padding: 10px;
+  width: 250px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  background: #e50914;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f40612;
+}
+
+#planes div, #peliculas div {
+  background: #333;
+  margin: 15px 0;
+  padding: 15px;
+  border-radius: 8px;
+}

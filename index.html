@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Registro / Login</title>
+  <link rel="stylesheet" href="./index.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script type="module" src="./index.js"></script>
+</head>
+<body>
+  <h1>Bienvenido a Películas Streaming</h1>
+
+  <section>
+    <h2>Registro</h2>
+    <input id="nombre" placeholder="Nombre">
+    <input id="edad" type="number" placeholder="Edad">
+    <input id="email" type="email" placeholder="Correo">
+    <input id="password" type="password" placeholder="Contraseña">
+    <button onclick="registrar()">Registrarse</button>
+  </section>
+
+  <section>
+    <h2>Login</h2>
+    <input id="emailLogin" type="email" placeholder="Correo">
+    <input id="passwordLogin" type="password" placeholder="Contraseña">
+    <button onclick="login()">Ingresar</button>
+  </section>
+</body>
+</html>
