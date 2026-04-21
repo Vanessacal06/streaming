@@ -43,6 +43,27 @@ async function login() {
   if (error) {
     alert("Error en login: " + error.message);
   } else {
+    // Una vez logueado, obtenemos el usuario actual
+    const user = data.user;
+
+    // Insertar perfil en la tabla 'perfiles'
+    const nombre = document.getElementById("nombre").value;
+    const edad = document.getElementById("edad").value;
+
+    const { error: insertError } = await supabaseClient
+      .from("perfiles")
+      .insert([
+        {
+          id_usuario: user.id, // ID único del usuario en Supabase
+          nombre: nombre,
+          edad: edad
+        }
+      ]);
+
+    if (insertError) {
+      console.error("Error al crear perfil:", insertError.message);
+    }
+
     // Redirige al flujo de planes
     window.location.href = "planes.html";
   }
