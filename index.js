@@ -49,7 +49,7 @@ async function login() {
     const { data: perfilExistente, error: perfilError } = await supabaseClient
       .from("perfiles")
       .select("*")
-      .eq("identificación", user.id)
+      .eq("identificacion", user.id) // ✅ sin tilde
       .single();
 
     if (perfilError) {
@@ -65,7 +65,7 @@ async function login() {
         .from("perfiles")
         .insert([
           {
-            identificación: user.id, // columna correcta de tu tabla
+            identificacion: user.id, // ✅ sin tilde
             nombre: nombre,
             edad: edad,
             tipo_suscripcion: "Pendiente", // valor inicial hasta que elija plan
