@@ -14,7 +14,7 @@ async function registrar() {
     email,
     password,
     options: {
-      emailRedirectTo: "https://vanessacal06.github.io/Peliculas/planes.html"
+      emailRedirectTo: "https://vanessacal06.github.io/streaming/"
     }
   });
 
