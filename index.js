@@ -1,9 +1,8 @@
 // Conexión a Supabase
 const supabaseClient = window.supabase.createClient(
-  "https://wokruyihvhbkcgvlhsnk.supabase.co/rest/v1/",   // tu Project URL real
+  "https://wokruyihvhbkcgvlhsnk.supabase.co",   // Project URL correcto
   "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN" // tu anon key real
 );
-
 
 // Registro de usuario
 async function registrar() {
@@ -16,7 +15,7 @@ async function registrar() {
     email,
     password,
     options: {
-      emailRedirectTo: "hhttps://vanessacal06.github.io/streaming/",
+      emailRedirectTo: "https://vanessacal06.github.io/streaming/planes.html",
       data: {
         nombre: nombre,
         edad: edad
@@ -49,5 +48,7 @@ async function login() {
   }
 }
 
-
+// Exportar funciones al ámbito global
+window.registrar = registrar;
+window.login = login;
 
