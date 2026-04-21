@@ -60,4 +60,3 @@ window.seleccionarPlan = seleccionarPlan;
 
 // Ejecutar carga inicial
 cargarPlanes();
-
