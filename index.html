@@ -1,36 +1,50 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Registro / Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./index.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script type="module" src="./index.js"></script>
+  <title>Document</title>
 </head>
 <body>
-  <h1>Bienvenido a Películas Streaming</h1>
+  <div class="contenedor-general">
 
-  <section>
-    <h2>Registro</h2>
-    <input id="nombre" placeholder="Nombre">
-    <input id="edad" type="number" placeholder="Edad">
-    <input id="email" type="email" placeholder="Correo">
-    <input id="password" type="password" placeholder="Contraseña">
-    <button onclick="registrar()">Registrarse</button>
-  </section>
+  <h1 class="bienvenidos">Bienvenidos a Flimix.TV</h1>
 
-  <section>
-    <h2>Login</h2>
-    <input id="emailLogin" type="email" placeholder="Correo">
-    <input id="passwordLogin" type="password" placeholder="Contraseña">
-    <button onclick="login()">Ingresar</button>
-  </section>
+  <main class="contenedor-principal">
 
-   <section>
-    <h2>Recuperar contraseña</h2>
-    <input type="email" id="emailRecuperar" placeholder="Tu correo">
-    <button onclick="recuperarPassword()">Recuperar contraseña</button>
-  </section>
-  
+    <!-- LOGIN -->
+    <section class="card" id="loginCard">
+      <h2>Login</h2>
+      <input id="emailLogin" type="email" placeholder="Correo">
+      <input id="passwordLogin" type="password" placeholder="Contraseña">
+      <button onclick="login()">Ingresar</button>
+
+      <p class="switch">
+        ¿No tienes cuenta?
+        <span onclick="mostrarRegistro()">Regístrate</span>
+      </p>
+    </section>
+
+    <!-- REGISTRO -->
+    <section class="card oculto" id="registroCard">
+      <h2>Registro</h2>
+      <input id="nombre" placeholder="Nombre">
+      <input id="edad" type="number" placeholder="Edad">
+      <input id="email" type="email" placeholder="Correo">
+      <input id="password" type="password" placeholder="Contraseña">
+      <button onclick="registrar()">Registrarse</button>
+
+      <p class="switch">
+        ¿Ya tienes cuenta?
+        <span onclick="mostrarLogin()">Inicia sesión</span>
+      </p>
+    </section>
+
+  </main>
+
+</div>
+
+<script src="./efectos.js"></script>
 </body>
 </html>
