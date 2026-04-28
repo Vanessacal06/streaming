@@ -1,44 +1,141 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background-color: #111;
-  color: #fff;
-  margin: 0;
-  padding: 20px;
+  color: white;
+  background: black;
+  overflow-x: hidden;
 }
 
-h1, h2 {
-  color: #e50914; /* rojo estilo Netflix */
+/* VIDEO */
+.video-fondo {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
 }
 
-section {
-  margin-bottom: 30px;
-  padding: 20px;
-  background: #222;
-  border-radius: 8px;
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: -1;
 }
 
-input, button {
-  display: block;
-  margin: 10px 0;
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px 40px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+}
+
+.highlight {
+  color: #e50914;
+}
+
+.titulo {
+  margin-top: 10px;
+  color: #ccc;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+/* CONTENEDOR CENTRADO */
+.contenedor {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* BOX FORMULARIOS */
+.box {
+  text-align: center;
+  width: 300px;
+}
+
+/* INPUTS MINIMALISTAS */
+input {
+  width: 100%;
+  margin: 12px 0;
   padding: 10px;
-  width: 250px;
-  border-radius: 5px;
+  background: transparent;
   border: none;
+  border-bottom: 2px solid white;
+  color: white;
+  outline: none;
 }
 
+input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+/* BOTONES */
 button {
-  background: #e50914;
-  color: #fff;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 25px;
+  border: 2px solid #e50914;
+  background: transparent;
+  color: #e50914;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 button:hover {
-  background: #f40612;
+  background: #e50914;
+  color: white;
 }
 
-#planes div, #peliculas div {
-  background: #333;
-  margin: 15px 0;
-  padding: 15px;
-  border-radius: 8px;
+/* LINKS */
+.link {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: white;
+}
+
+/* OCULTAR */
+.oculto {
+  display: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .contenedor {
+    flex-direction: column;
+  }
 }

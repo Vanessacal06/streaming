@@ -131,3 +131,4 @@ async function recuperarPassword() {
 window.registrar = registrar;
 window.login = login;
 window.recuperarPassword = recuperarPassword;
+

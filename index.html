@@ -2,35 +2,105 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Registro / Login</title>
+  <title>Streaming App</title>
+
   <link rel="stylesheet" href="./index.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script type="module" src="./index.js"></script>
 </head>
-<body>
-  <h1>Bienvenido a Películas Streaming</h1>
 
-  <section>
+<body>
+
+<!-- VIDEO DE FONDO -->
+<video autoplay muted loop class="video-fondo">
+  <source src="video.mp4" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
+<!-- HERO -->
+<section class="hero">
+
+  <h1>
+    DESCUBRE HISTORIAS <br>
+    <span class="highlight">SIN LÍMITES</span>
+  </h1>
+
+  <p class="titulo">
+    Miles de películas y series para ver cuando quieras
+  </p>
+
+  <div class="features">
+    <div class="feature">🎬 Estrenos exclusivos</div>
+    <div class="feature">📺 Calidad HD</div>
+    <div class="feature">⭐ Para todos los gustos</div>
+  </div>
+
+</section>
+
+<!-- CONTENEDOR FORMULARIOS -->
+<section class="contenedor">
+
+  <!-- REGISTRO -->
+  <div id="registro" class="box">
     <h2>Registro</h2>
+
     <input id="nombre" placeholder="Nombre">
     <input id="edad" type="number" placeholder="Edad">
     <input id="email" type="email" placeholder="Correo">
     <input id="password" type="password" placeholder="Contraseña">
-    <button onclick="registrar()">Registrarse</button>
-  </section>
 
-  <section>
+    <button onclick="registrar()">Registrarse</button>
+
+    <p class="link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="login" class="box oculto">
     <h2>Login</h2>
+
     <input id="emailLogin" type="email" placeholder="Correo">
     <input id="passwordLogin" type="password" placeholder="Contraseña">
-    <button onclick="login()">Ingresar</button>
-  </section>
 
-   <section>
+    <button onclick="login()">Ingresar</button>
+
+    <p class="link" onclick="mostrarRegistro()">Crear cuenta</p>
+    <p class="link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</p>
+  </div>
+
+  <!-- RECUPERAR -->
+  <div id="otra" class="box oculto">
     <h2>Recuperar contraseña</h2>
-    <input type="email" id="emailRecuperar" placeholder="Tu correo">
-    <button onclick="recuperarPassword()">Recuperar contraseña</button>
-  </section>
-  
+
+    <input id="emailRecuperar" type="email" placeholder="Tu correo">
+
+    <button onclick="recuperarPassword()">Recuperar</button>
+
+    <p class="link" onclick="mostrarLogin()">Volver</p>
+  </div>
+
+</section>
+
+<script>
+  function mostrarLogin() {
+    document.getElementById("login").classList.remove("oculto");
+    document.getElementById("registro").classList.add("oculto");
+    document.getElementById("otra").classList.add("oculto");
+  }
+
+  function mostrarRegistro() {
+    document.getElementById("registro").classList.remove("oculto");
+    document.getElementById("login").classList.add("oculto");
+    document.getElementById("otra").classList.add("oculto");
+  }
+
+  function mostrarRecuperar() {
+    document.getElementById("otra").classList.remove("oculto");
+    document.getElementById("login").classList.add("oculto");
+    document.getElementById("registro").classList.add("oculto");
+  }
+</script>
+
 </body>
 </html>
