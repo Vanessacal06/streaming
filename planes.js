@@ -60,3 +60,18 @@ window.seleccionarPlan = seleccionarPlan;
 
 // Ejecutar carga inicial
 cargarPlanes();
+
+// planes pelicula
+function filtrar(categoria) {
+  let peliculas = document.querySelectorAll('.pelicula');
+
+  peliculas.forEach(peli => {
+    if (categoria === 'todas') {
+      peli.style.display = 'block';
+    } else {
+      peli.style.display = peli.classList.contains(categoria)
+        ? 'block'
+        : 'none';
+    }
+  });
+}
