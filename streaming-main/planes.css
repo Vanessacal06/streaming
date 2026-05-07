@@ -1,0 +1,609 @@
+@mport url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    font-family:'Poppins',sans-serif;
+
+    min-height:100vh;
+
+    overflow-x:hidden;
+
+    color:white;
+
+    background:#0A0F17;
+
+    position:relative;
+}
+
+/* ================================= */
+/* FONDO CINEMATOGRÁFICO */
+/* ================================= */
+
+body::before{
+
+    content:'';
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            rgba(10,15,23,.78),
+            rgba(10,15,23,.92)
+        ),
+
+        url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?q=80&w=1974&auto=format&fit=crop');
+
+    background-size:cover;
+
+    background-position:center;
+
+    animation:zoomBg 18s infinite alternate ease-in-out;
+
+    z-index:-3;
+}
+
+/* Glow neon */
+
+body::after{
+
+    content:'';
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+        radial-gradient(circle at top left, rgba(255,43,214,.22), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(0,240,255,.18), transparent 35%),
+        radial-gradient(circle at center, rgba(255,170,0,.08), transparent 40%);
+
+    z-index:-2;
+}
+
+@keyframes zoomBg{
+
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.08);
+    }
+}
+
+/* ================================= */
+/* HERO */
+/* ================================= */
+
+.hero{
+
+    text-align:center;
+
+    padding:80px 20px 30px;
+}
+
+.hero h1{
+
+    font-size:4rem;
+
+    font-weight:800;
+
+    letter-spacing:4px;
+
+    margin-bottom:20px;
+
+    background:linear-gradient(
+        90deg,
+        #00F0FF,
+        #FF2BD6
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+
+    max-width:850px;
+
+    margin:auto;
+
+    color:#B8BEDD;
+
+    font-size:1.2rem;
+
+    line-height:1.7;
+}
+
+/* ================================= */
+/* CONTENEDOR GENERAL */
+/* ================================= */
+
+.planes-wrapper{
+
+    width:92%;
+
+    max-width:1450px;
+
+    margin:60px auto;
+
+    padding:55px;
+
+    border-radius:35px;
+
+    position:relative;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(20,24,40,.82),
+            rgba(10,15,23,.92)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,.45),
+        0 0 80px rgba(255,43,214,.08);
+
+    overflow:hidden;
+}
+
+/* Glow interno */
+
+.planes-wrapper::before{
+
+    content:'';
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(255,43,214,.12),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at bottom right,
+            rgba(0,240,255,.10),
+            transparent 35%
+        );
+
+    pointer-events:none;
+}
+
+/* Línea superior */
+
+.planes-wrapper::after{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    height:4px;
+
+    background:linear-gradient(
+        90deg,
+        #FF2BD6,
+        #00F0FF,
+        #FFAA00
+    );
+}
+
+/* ================================= */
+/* TÍTULO */
+/* ================================= */
+
+.planes-title{
+
+    text-align:center;
+
+    font-size:1.2rem;
+
+    letter-spacing:4px;
+
+    color:#A1A6C6;
+
+    margin-bottom:50px;
+
+    font-weight:600;
+}
+
+/* ================================= */
+/* GRID */
+/* ================================= */
+
+.planes-container{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+
+    gap:40px;
+}
+
+/* ================================= */
+/* TARJETAS */
+/* ================================= */
+
+.plan-card{
+
+    position:relative;
+
+    background:rgba(20,24,40,.78);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:30px;
+
+    padding:45px 35px;
+
+    overflow:hidden;
+
+    transition:.4s ease;
+
+    box-shadow:
+        0 0 25px rgba(0,0,0,.45),
+        0 0 40px rgba(255,43,214,.08);
+}
+
+/* Línea superior */
+
+.plan-card::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:0;
+
+    width:100%;
+
+    height:5px;
+
+    background:linear-gradient(
+        90deg,
+        #FF2BD6,
+        #00F0FF,
+        #FFAA00
+    );
+}
+
+/* Hover */
+
+.plan-card:hover{
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    box-shadow:
+        0 0 30px rgba(255,43,214,.35),
+        0 0 70px rgba(0,240,255,.12);
+}
+
+/* Nombre */
+
+.plan-card h3{
+
+    font-size:2rem;
+
+    margin-bottom:30px;
+
+    font-weight:700;
+
+    color:#FFFFFF;
+}
+
+/* ================================= */
+/* PRECIO */
+/* ================================= */
+
+.price{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:8px;
+
+    margin-bottom:35px;
+}
+
+.price .currency{
+
+    font-size:1.5rem;
+
+    color:#00F0FF;
+
+    margin-bottom:10px;
+}
+
+.price .number{
+
+    font-size:4.5rem;
+
+    line-height:1;
+
+    font-weight:800;
+
+    background:linear-gradient(
+        180deg,
+        #FFFFFF,
+        #BFC7FF
+    );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.price .month{
+
+    font-size:1.1rem;
+
+    color:#A1A6C6;
+
+    margin-bottom:10px;
+}
+
+/* ================================= */
+/* FEATURES */
+/* ================================= */
+
+.features{
+
+    list-style:none;
+
+    margin-bottom:40px;
+}
+
+.features li{
+
+    padding:14px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+    color:#D8DCF3;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.features li::before{
+
+    content:'✦';
+
+    color:#FFAA00;
+}
+
+/* ================================= */
+/* BOTÓN PREMIUM */
+/* ================================= */
+
+.btn-plan{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:16px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+    font-size:1rem;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    text-transform:uppercase;
+
+    color:white;
+
+    background:linear-gradient(
+        135deg,
+        #FF2BD6,
+        #7B2DFF,
+        #00F0FF
+    );
+
+    background-size:300% 300%;
+
+    animation:gradientMove 6s ease infinite;
+
+    transition:.35s ease;
+
+    box-shadow:
+        0 0 15px rgba(255,43,214,.35),
+        0 0 30px rgba(0,240,255,.12);
+}
+
+/* Gradiente animado */
+
+@keyframes gradientMove{
+
+    0%{
+        background-position:0% 50%;
+    }
+
+    50%{
+        background-position:100% 50%;
+    }
+
+    100%{
+        background-position:0% 50%;
+    }
+}
+
+/* Glow */
+
+.btn-plan::after{
+
+    content:'';
+
+    position:absolute;
+
+    inset:-2px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        90deg,
+        #FF2BD6,
+        #00F0FF,
+        #FFAA00,
+        #FF2BD6
+    );
+
+    background-size:400%;
+
+    z-index:-1;
+
+    filter:blur(12px);
+
+    opacity:.7;
+
+    animation:glowMove 8s linear infinite;
+}
+
+@keyframes glowMove{
+
+    0%{
+        background-position:0%;
+    }
+
+    100%{
+        background-position:400%;
+    }
+}
+
+/* Brillo */
+
+.btn-plan::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:0;
+    left:-120%;
+
+    width:70%;
+
+    height:100%;
+
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.45),
+        transparent
+    );
+
+    transform:skewX(-20deg);
+
+    transition:.8s;
+}
+
+/* Hover botón */
+
+.btn-plan:hover{
+
+    transform:
+        translateY(-3px)
+        scale(1.03);
+
+    box-shadow:
+        0 0 25px rgba(255,43,214,.55),
+        0 0 45px rgba(0,240,255,.28);
+}
+
+.btn-plan:hover::before{
+
+    left:140%;
+}
+
+/* Click */
+
+.btn-plan:active{
+
+    transform:scale(.98);
+}
+
+/* ================================= */
+/* ETIQUETA */
+/* ================================= */
+
+.badge{
+
+    position:absolute;
+
+    top:22px;
+    right:-40px;
+
+    background:#FFAA00;
+
+    color:#111;
+
+    padding:8px 50px;
+
+    transform:rotate(45deg);
+
+    font-size:.8rem;
+
+    font-weight:800;
+}
+
+/* ================================= */
+/* RESPONSIVE */
+/* ================================= */
+
+@media(max-width:768px){
+
+    .hero h1{
+        font-size:2.5rem;
+    }
+
+    .hero p{
+        font-size:1rem;
+    }
+
+    .planes-wrapper{
+        padding:25px;
+    }
+
+    .price .number{
+        font-size:3rem;
+    }
+}

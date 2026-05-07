@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Catálogo de Películas</title>
+
+  <link rel="stylesheet" href="./index.css">
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <!-- CONFIG -->
+  <script src="config.js"></script>
+
+  <!-- JS -->
+  <script type="module" src="./planes.js"></script>
+  <script type="module" src="./calificaciones.js"></script>
+  <script src="peliculas.js"></script>
+
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header class="navbar">
+
+    <div class="logo-container">
+
+      <img 
+        src="./logo streaming.jpeg" 
+        alt="Logo"
+        class="logo"
+      >
+
+      <h1>CATÁLOGO PELÍCULAS</h1>
+
+    </div>
+
+  </header>
+
+  <!-- BUSCADOR -->
+
+  <section class="buscador-container">
+
+    <input
+      type="text"
+      id="buscador"
+      placeholder="Buscar películas o series..."
+    >
+
+    <button onclick="buscarPeliculas()">
+      Buscar
+    </button>
+
+  </section>
+
+  <!-- CONTENEDOR PELICULAS -->
+
+  <main>
+
+    <section class="contenedor" id="peliculas">
+
+      <!-- TMDB GENERA TODO AUTOMATICAMENTE -->
+
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+
+  <footer>
+    <p>© 2026 Películas</p>
+  </footer>
+
+</body>
+
+</html> 

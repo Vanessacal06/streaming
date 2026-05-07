@@ -1,0 +1,377 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: white;
+  background: black;
+  overflow-x: hidden;
+}
+
+/* VIDEO */
+.video-fondo {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: -1;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 80px 20px 40px;
+}
+
+.hero h1 {
+  font-size: 3rem;
+}
+
+.highlight {
+  color: #e50914;
+}
+
+.titulo {
+  margin-top: 10px;
+  color: #ccc;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.feature {
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+/* CONTENEDOR CENTRADO */
+.contenedor{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:30px;
+
+  width:100%;
+  padding:40px;
+
+  justify-content:center;
+  align-items:center;
+
+  min-height:100vh;
+}
+
+/* BOX FORMULARIOS */
+.box {
+  text-align: center;
+  width: 300px;
+}
+
+/* INPUTS MINIMALISTAS */
+input {
+  width: 100%;
+  margin: 12px 0;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid white;
+  color: white;
+  outline: none;
+}
+
+input::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+/* BOTONES */
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 25px;
+  border: 2px solid #e50914;
+  background: transparent;
+  color: #e50914;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #e50914;
+  color: white;
+}
+
+/* LINKS */
+.link {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #aaa;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: white;
+}
+
+/* OCULTAR */
+.oculto {
+  display: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .contenedor {
+    flex-direction: column;
+  }
+}
+
+/* planes peliculas  */
+
+
+
+/* Capa oscura para que el texto se vea bien */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: -1;
+}
+
+header, footer {
+  padding: 20px;
+}
+
+.contenedor {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pelicula {
+  background: rgba(0, 0, 0, 0.7);
+  margin: 15px;
+  padding: 15px;
+  border-radius: 10px;
+  width: 300px;
+  backdrop-filter: blur(5px);
+
+
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+
+  /* Fondo GIF */
+  background-image: url("https://media.giphy.com/media/3o7btZ3T6y3JTmjg4w/giphy.gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+iframe {
+  width: 100%;
+  height: 170px;
+  border-radius: 8px;
+}
+
+a {
+  display: block;
+  margin-top: 10px;
+  background: red;
+  color: white;
+  padding: 10px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+a:hover {
+  background: darkred;
+}
+/* ========================= */
+/* PELICULAS TMDB */
+/* ========================= */
+
+#peliculas{
+  width: 100%;
+  padding: 40px;
+}
+
+/* CARD */
+
+.pelicula{
+  background:rgba(0,0,0,0.75);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:15px;
+  overflow:hidden;
+  backdrop-filter:blur(8px);
+  transition:0.3s;
+  box-shadow:0 0 15px rgba(0,0,0,0.5);
+}
+
+.pelicula:hover{
+  transform:translateY(-8px);
+  box-shadow:0 0 25px rgba(229,9,20,0.5);
+}
+
+/* IMAGEN */
+
+.pelicula img{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+}
+
+/* CONTENIDO */
+
+.pelicula-contenido{
+  padding:18px;
+}
+
+.pelicula h2{
+  font-size:24px;
+  margin-bottom:10px;
+  color:white;
+}
+
+.descripcion{
+  color:#ccc;
+  font-size:14px;
+  line-height:1.5;
+  height:120px;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+
+/* ESTRELLAS */
+
+.estrellas{
+  color:gold;
+  margin-bottom:15px;
+  font-size:16px;
+}
+
+/* BOTON */
+
+.boton-trailer{
+  display:block;
+  text-align:center;
+  background: #7b2dff;
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.boton-trailer:hover{
+  background: #06f;;
+}
+
+/* BUSCADOR */
+
+.buscador-container{
+  width:100%;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:15px;
+
+  padding:30px;
+}
+
+.buscador-container button{
+  width:120px;
+  padding:12px;
+  margin-top:0;
+}
+
+#buscador{
+  width:400px;
+  max-width:90%;
+
+  padding:15px;
+
+  border:none;
+  outline:none;
+
+  border-radius:10px;
+
+  background:rgba(255,255,255,0.1);
+
+  color:white;
+
+  font-size:16px;
+
+  backdrop-filter:blur(5px);
+}
+
+#buscador::placeholder{
+  color:#ccc;
+}
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
+
+.navbar{
+  width:100%;
+
+  display:flex;
+  align-items:center;
+
+  padding:20px 40px;
+
+  background:rgba(0,0,0,0.5);
+
+  backdrop-filter:blur(8px);
+
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo-container{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo{
+  width:60px;
+  height:60px;
+  object-fit:contain;
+}
+
+.logo-container h1{
+  font-size:28px;
+  color:white;
+  letter-spacing:2px;
+}
