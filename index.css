@@ -63,13 +63,18 @@ body {
 }
 
 /* CONTENEDOR CENTRADO */
-.contenedor {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 50vh;
-  gap: 40px;
-  flex-wrap: wrap;
+.contenedor{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:30px;
+
+  width:100%;
+  padding:40px;
+
+  justify-content:center;
+  align-items:center;
+
+  min-height:100vh;
 }
 
 /* BOX FORMULARIOS */
@@ -208,5 +213,165 @@ a {
 a:hover {
   background: darkred;
 }
+/* ========================= */
+/* PELICULAS TMDB */
+/* ========================= */
 
+#peliculas{
+  width: 100%;
+  padding: 40px;
+}
 
+/* CARD */
+
+.pelicula{
+  background:rgba(0,0,0,0.75);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:15px;
+  overflow:hidden;
+  backdrop-filter:blur(8px);
+  transition:0.3s;
+  box-shadow:0 0 15px rgba(0,0,0,0.5);
+}
+
+.pelicula:hover{
+  transform:translateY(-8px);
+  box-shadow:0 0 25px rgba(229,9,20,0.5);
+}
+
+/* IMAGEN */
+
+.pelicula img{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+}
+
+/* CONTENIDO */
+
+.pelicula-contenido{
+  padding:18px;
+}
+
+.pelicula h2{
+  font-size:24px;
+  margin-bottom:10px;
+  color:white;
+}
+
+.descripcion{
+  color:#ccc;
+  font-size:14px;
+  line-height:1.5;
+  height:120px;
+  overflow:hidden;
+  margin-bottom:15px;
+}
+
+/* ESTRELLAS */
+
+.estrellas{
+  color:gold;
+  margin-bottom:15px;
+  font-size:16px;
+}
+
+/* BOTON */
+
+.boton-trailer{
+  display:block;
+  text-align:center;
+  background: #7b2dff;
+  color:white;
+  padding:12px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  transition:0.3s;
+}
+
+.boton-trailer:hover{
+  background: #06f;;
+}
+
+/* BUSCADOR */
+
+.buscador-container{
+  width:100%;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:15px;
+
+  padding:30px;
+}
+
+.buscador-container button{
+  width:120px;
+  padding:12px;
+  margin-top:0;
+}
+
+#buscador{
+  width:400px;
+  max-width:90%;
+
+  padding:15px;
+
+  border:none;
+  outline:none;
+
+  border-radius:10px;
+
+  background:rgba(255,255,255,0.1);
+
+  color:white;
+
+  font-size:16px;
+
+  backdrop-filter:blur(5px);
+}
+
+#buscador::placeholder{
+  color:#ccc;
+}
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
+
+.navbar{
+  width:100%;
+
+  display:flex;
+  align-items:center;
+
+  padding:20px 40px;
+
+  background:rgba(0,0,0,0.5);
+
+  backdrop-filter:blur(8px);
+
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo-container{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.logo{
+  width:60px;
+  height:60px;
+  object-fit:contain;
+}
+
+.logo-container h1{
+  font-size:28px;
+  color:white;
+  letter-spacing:2px;
+}
