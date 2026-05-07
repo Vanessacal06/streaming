@@ -1,0 +1,286 @@
+/* ======================================
+   GENERAL & VIDEO FONDO
+====================================== */
+body {
+  background: #0D0915;
+  color: #F3F6FF;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+#video-fondo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  object-fit: cover;
+  filter: brightness(0.3) contrast(1.1);
+}
+
+/* ======================================
+   NAVBAR (Estilo Futurista)
+====================================== */
+.navbar {
+  background: rgba(13, 9, 21, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 20px 40px;
+  border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  justify-content: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+.logo-container h1 {
+  font-size: 32px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin: 0;
+  background: linear-gradient(90deg, #00F0FF, #FF2BD6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+}
+
+/* ======================================
+   CONTROLES (Centrado y Estético)
+====================================== */
+.main-controls {
+  display: flex;
+  justify-content: center;
+  padding: 50px 20px;
+}
+
+.search-filter-group {
+  width: 100%;
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  padding: 40px;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Buscador Interno */
+.buscador-box {
+  display: flex;
+  gap: 10px;
+}
+
+#buscador {
+  flex: 1;
+  background: rgba(10, 14, 23, 0.8);
+  border: 2px solid rgba(0, 240, 255, 0.4);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+#buscador:focus {
+  border-color: #00F0FF;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.buscador-box button {
+  background: linear-gradient(135deg, #00F0FF, #7B2DFF);
+  border: none;
+  color: white;
+  padding: 0 25px;
+  border-radius: 12px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.3s;
+  width: auto;
+}
+
+.buscador-box button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+}
+
+/* Filtro Interno */
+#filtroGenero {
+  width: 100%;
+  background: rgba(10, 14, 23, 0.8);
+  border: 2px solid rgba(255, 43, 214, 0.4);
+  color: white;
+  padding: 15px;
+  border-radius: 12px;
+  font-size: 15px;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#filtroGenero:focus {
+  border-color: #FF2BD6;
+  box-shadow: 0 0 15px rgba(255, 43, 214, 0.3);
+}
+
+/* ======================================
+   SLIDER DE ESTRENOS
+====================================== */
+#slider-estrenos {
+  width: 90%;
+  margin: 0 auto 40px auto;
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding: 10px;
+  scrollbar-width: none;
+}
+
+#slider-estrenos::-webkit-scrollbar {
+  display: none;
+}
+
+.slide-item {
+  min-width: 320px;
+  height: 180px;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  position: relative;
+}
+
+.slide-content {
+  background: linear-gradient(transparent, rgba(0,0,0,0.9));
+  width: 100%;
+  padding: 15px;
+}
+
+/* ======================================
+   GRID DE PELÍCULAS
+====================================== */
+.contenedor {
+  width: 90%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  padding-bottom: 60px;
+}
+
+.pelicula {
+  background: rgba(26, 22, 37, 0.6);
+  backdrop-filter: blur(5px);
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: 0.4s;
+}
+
+.pelicula:hover {
+  transform: translateY(-10px);
+  border-color: #00F0FF;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+}
+
+.pelicula img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+}
+
+.pelicula-contenido {
+  padding: 20px;
+}
+
+.pelicula-contenido h2 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+  color: #FFF;
+}
+
+.categoria {
+  color: #00F0FF;
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.descripcion {
+  color: #A1A6C6;
+  font-size: 14px;
+  height: 60px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.estrellas {
+  color: #FFD700;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 15px;
+}
+
+/* ======================================
+   BOTONES CARDS
+====================================== */
+.boton-trailer {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid #00F0FF;
+  color: #00F0FF;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.boton-trailer:hover {
+  background: #00F0FF;
+  color: #000;
+}
+
+.pelicula button {
+  width: 100%;
+  background: linear-gradient(135deg, #FF2BD6, #7B2DFF);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ======================================
+   FOOTER
+====================================== */
+footer {
+  text-align: center;
+  padding: 40px;
+  background: rgba(13, 9, 21, 0.9);
+  color: #666;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}

@@ -2,85 +2,74 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <title>Catálogo de Películas</title>
+  <title>Catálogo de Películas | VELORA</title>
 
   <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./peliculas.css">
 
-  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  <!-- CONFIG -->
   <script src="./config.js"></script>
 
-  <!-- JS -->
   <script type="module" src="./planes.js"></script>
-
   <script type="module" src="./calificaciones.js"></script>
-
   <script src="./peliculas.js" defer></script>
-
 </head>
 
 <body>
 
-  <!-- HEADER -->
+  <video autoplay muted loop id="video-fondo">
+    <source src="./video.mp4" type="video/mp4">
+    Tu navegador no soporta videos.
+  </video>
 
   <header class="navbar">
-
-    <div class="logo-container">
-
-      <img
-        src="./logo streaming.jpeg"
-        alt="Logo"
-        class="logo"
-      >
-
-      <h1>CATÁLOGO PELÍCULAS</h1>
-
-    </div>
-
+    <section class="logo-container">
+      <img src="./logo streaming.jpeg" alt="Logo" class="logo">
+      <h1>VELORA STREAMING</h1>
+    </section>
   </header>
 
-  <!-- BUSCADOR -->
+  <main class="main-controls">
+    
+    <section class="search-filter-group">
+      
+      <section class="buscador-box">
+        <input 
+          type="text" 
+          id="buscador" 
+          placeholder="Buscar películas o series..."
+        >
+        <button onclick="buscarPeliculas()">
+          BUSCAR
+        </button>
+      </section>
 
-  <section class="buscador-container">
-
-    <input
-      type="text"
-      id="buscador"
-      placeholder="Buscar películas o series..."
-    >
-
-    <button onclick="buscarPeliculas()">
-      Buscar
-    </button>
-
-  </section>
-
-  <!-- CONTENEDOR PELICULAS -->
-
-  <main>
-
-    <section
-      class="contenedor"
-      id="peliculas"
-    >
-
-      <!-- TMDB GENERA TODO AUTOMATICAMENTE -->
+      <section class="filtro-box">
+        <select id="filtroGenero" onchange="filtrarGeneroSelect()">
+          <option value="Todos">Todas las categorías</option>
+          <option value="Acción">Acción</option>
+          <option value="Drama">Drama</option>
+          <option value="Comedia">Comedia</option>
+          <option value="Terror">Terror</option>
+          <option value="Romance">Romance</option>
+          <option value="Ciencia ficción">Ciencia ficción</option>
+        </select>
+      </section>
 
     </section>
 
   </main>
 
-  <!-- FOOTER -->
+  <section id="slider-estrenos">
+    </section>
+
+  <section class="contenedor" id="peliculas">
+    </section>
 
   <footer>
-
-    <p>© 2026 Películas</p>
-
+    <p>© 2026 VELORA - Experiencia Futurista</p>
   </footer>
 
 </body>

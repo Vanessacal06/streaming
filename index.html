@@ -2,109 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Streaming App</title>
-
+  <title>Streaming App | VELORA</title>
   <link rel="stylesheet" href="./index.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script type="module" src="./index.js"></script>
 </head>
-
 <body>
 
-<!-- VIDEO DE FONDO -->
-<video autoplay muted loop class="video-fondo">
-  <source src="video.mp4" type="video/mp4">
-</video>
+  <video autoplay muted loop class="video-fondo">
+    <source src="video.mp4" type="video/mp4">
+  </video>
 
-<div class="overlay"></div>
+  <section class="overlay"></section>
 
-<!-- HERO -->
-<section class="hero">
+  <main class="main-wrapper">
+    
+    <header class="hero">
+      <h1>DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span></h1>
+      <p class="titulo">Miles de películas y series para ver cuando quieras</p>
+      
+      <nav class="features">
+        <span class="feature">🎬 Estrenos exclusivos</span>
+        <span class="feature">📺 Calidad HD</span>
+        <span class="feature">⭐ Para todos los gustos</span>
+      </nav>
+    </header>
 
-  <h1>
-    DESCUBRE HISTORIAS <br>
-    <span class="highlight">SIN LÍMITES</span>
-  </h1>
+    <section class="contenedor-auth">
 
-  <p class="titulo">
-    Miles de películas y series para ver cuando quieras
-  </p>
+      <article id="registro" class="auth-box">
+        <h2>Registro</h2>
+        <input id="nombre" type="text" placeholder="Nombre">
+        <input id="edad" type="number" placeholder="Edad">
+        <input id="email" type="email" placeholder="Correo electrónico">
+        <input id="password" type="password" placeholder="Contraseña">
+        <button onclick="registrar()">REGISTRARSE</button>
+        <p class="link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</p>
+      </article>
 
-  <div class="features">
-    <div class="feature">🎬 Estrenos exclusivos</div>
-    <div class="feature">📺 Calidad HD</div>
-    <div class="feature">⭐ Para todos los gustos</div>
-  </div>
+      <article id="login" class="auth-box oculto">
+        <h2>Iniciar Sesión</h2>
+        <input id="emailLogin" type="email" placeholder="Correo electrónico">
+        <input id="passwordLogin" type="password" placeholder="Contraseña">
+        <button onclick="login()" class="btn-cyan">INGRESAR</button>
+        <p class="link" onclick="mostrarRegistro()">Crear una cuenta nueva</p>
+        <p class="link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</p>
+      </article>
 
-</section>
+      <article id="otra" class="auth-box oculto">
+        <h2>Recuperar</h2>
+        <p class="instruccion">Enviaremos un enlace a tu correo</p>
+        <input id="emailRecuperar" type="email" placeholder="Tu correo registrado">
+        <button onclick="recuperarPassword()">RECUPERAR</button>
+        <p class="link" onclick="mostrarLogin()">Volver al inicio</p>
+      </article>
 
-<!-- CONTENEDOR FORMULARIOS -->
-<section class="contenedor">
+    </section>
+  </main>
 
-  <!-- REGISTRO -->
-  <div id="registro" class="box">
-    <h2>Registro</h2>
+  <script>
+    function mostrarLogin() {
+      document.getElementById("login").classList.remove("oculto");
+      document.getElementById("registro").classList.add("oculto");
+      document.getElementById("otra").classList.add("oculto");
+    }
 
-    <input id="nombre" placeholder="Nombre">
-    <input id="edad" type="number" placeholder="Edad">
-    <input id="email" type="email" placeholder="Correo">
-    <input id="password" type="password" placeholder="Contraseña">
+    function mostrarRegistro() {
+      document.getElementById("registro").classList.remove("oculto");
+      document.getElementById("login").classList.add("oculto");
+      document.getElementById("otra").classList.add("oculto");
+    }
 
-    <button onclick="registrar()">Registrarse</button>
-
-    <p class="link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</p>
-  </div>
-
-  <!-- LOGIN -->
-  <div id="login" class="box oculto">
-    <h2>Login</h2>
-
-    <input id="emailLogin" type="email" placeholder="Correo">
-    <input id="passwordLogin" type="password" placeholder="Contraseña">
-
-    <button onclick="login()">Ingresar</button>
-
-    <p class="link" onclick="mostrarRegistro()">Crear cuenta</p>
-    <p class="link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</p>
-  </div>
-
-  <!-- RECUPERAR -->
-  <div id="otra" class="box oculto">
-    <h2>Recuperar contraseña</h2>
-
-    <input id="emailRecuperar" type="email" placeholder="Tu correo">
-
-    <button onclick="recuperarPassword()">Recuperar</button>
-
-    <p class="link" onclick="mostrarLogin()">Volver</p>
-  </div>
-   
-  <!-- modo oscuro y mullenguaje -->
-
-  
-
-</section>
-
-<script>
-  function mostrarLogin() {
-    document.getElementById("login").classList.remove("oculto");
-    document.getElementById("registro").classList.add("oculto");
-    document.getElementById("otra").classList.add("oculto");
-  }
-
-  function mostrarRegistro() {
-    document.getElementById("registro").classList.remove("oculto");
-    document.getElementById("login").classList.add("oculto");
-    document.getElementById("otra").classList.add("oculto");
-  }
-
-  function mostrarRecuperar() {
-    document.getElementById("otra").classList.remove("oculto");
-    document.getElementById("login").classList.add("oculto");
-    document.getElementById("registro").classList.add("oculto");
-  }
-</script>
+    function mostrarRecuperar() {
+      document.getElementById("otra").classList.remove("oculto");
+      document.getElementById("login").classList.add("oculto");
+      document.getElementById("registro").classList.add("oculto");
+    }
+  </script>
 
 </body>
 </html>
