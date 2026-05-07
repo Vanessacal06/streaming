@@ -2,6 +2,7 @@
 <html lang="es">
 
 <head>
+
   <meta charset="UTF-8">
 
   <title>Catálogo de Películas</title>
@@ -12,12 +13,14 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <!-- CONFIG -->
-  <script src="config.js"></script>
+  <script src="./config.js"></script>
 
   <!-- JS -->
   <script type="module" src="./planes.js"></script>
+
   <script type="module" src="./calificaciones.js"></script>
-  <script src="peliculas.js"></script>
+
+  <script src="./peliculas.js" defer></script>
 
 </head>
 
@@ -29,8 +32,8 @@
 
     <div class="logo-container">
 
-      <img 
-        src="./logo streaming.jpeg" 
+      <img
+        src="./logo streaming.jpeg"
         alt="Logo"
         class="logo"
       >
@@ -61,7 +64,10 @@
 
   <main>
 
-    <section class="contenedor" id="peliculas">
+    <section
+      class="contenedor"
+      id="peliculas"
+    >
 
       <!-- TMDB GENERA TODO AUTOMATICAMENTE -->
 
@@ -72,9 +78,11 @@
   <!-- FOOTER -->
 
   <footer>
+
     <p>© 2026 Películas</p>
+
   </footer>
 
 </body>
 
-</html> 
+</html>
