@@ -1,1 +1,102 @@
+// config.js - Configuración global de VELORA
 const API_KEY = "e244f6162401026ec4697b963a245163";
+
+// Supabase
+const SUPABASE_URL = "https://ytdkmyotjzaissxfjjuu.supabase.co";
+const SUPABASE_KEY = "sb_secret_g5E-NrUtUTntMeoTEq_79g_pIVTzOvg";
+
+// Idiomas disponibles
+const IDIOMAS = {
+  es: {
+    iniciarSesion: "Iniciar Sesión",
+    registro: "Registro",
+    correo: "Correo electrónico",
+    contrasena: "Contraseña",
+    nombre: "Nombre",
+    edad: "Edad",
+    ingresar: "INGRESAR",
+    registrarse: "REGISTRARSE",
+    recuperar: "Recuperar Contraseña",
+    noTienes: "¿No tienes cuenta? Crear una",
+    yaTienes: "¿Ya tienes cuenta? Iniciar sesión",
+    olvidaste: "¿Olvidaste tu contraseña?",
+    volver: "Volver al inicio",
+    buscar: "Buscar películas o series...",
+    todasCat: "Todas las categorías",
+    perfil: "Mi Perfil",
+    cerrarSesion: "Cerrar Sesión",
+    temaClaro: "☀️ Claro",
+    temaOscuro: "🌙 Oscuro",
+    clima: "Cargando clima...",
+    activaUbicacion: "Activa tu ubicación para ver el clima",
+    calificar: "Calificar",
+    verTrailer: "Ver Trailer",
+    elegirPlan: "ELIGE TU EXPERIENCIA",
+    activarPlan: "🚀 ACTIVAR PLAN",
+    carrito: "Carrito",
+    pagar: "PAGAR AHORA",
+    numeroTarjeta: "Número de tarjeta",
+    fechaExp: "MM/AA",
+    cvv: "CVV",
+    nombreTarjeta: "Nombre en la tarjeta",
+    pagoExitoso: "¡Pago simulado exitoso! Plan activado ✅",
+    camposRequeridos: "Por favor completa todos los campos",
+    estrellas: "Estrellas",
+    tuComentario: "Tu comentario (opcional)",
+    graciasCalif: "¡Gracias por tu calificación!",
+    planActivo: "Plan activo",
+    sinPlan: "Sin plan activo",
+    datosPersonales: "Datos Personales",
+    tarjetaGuardada: "Tarjeta guardada",
+    sinTarjeta: "No hay tarjeta guardada",
+    terminadoCon: "termina en"
+  },
+  en: {
+    iniciarSesion: "Sign In",
+    registro: "Register",
+    correo: "Email",
+    contrasena: "Password",
+    nombre: "Name",
+    edad: "Age",
+    ingresar: "SIGN IN",
+    registrarse: "REGISTER",
+    recuperar: "Recover Password",
+    noTienes: "Don't have an account? Create one",
+    yaTienes: "Already have an account? Sign in",
+    olvidaste: "Forgot your password?",
+    volver: "Back to login",
+    buscar: "Search movies or series...",
+    todasCat: "All categories",
+    perfil: "My Profile",
+    cerrarSesion: "Sign Out",
+    temaClaro: "☀️ Light",
+    temaOscuro: "🌙 Dark",
+    clima: "Loading weather...",
+    activaUbicacion: "Enable location to see weather",
+    calificar: "Rate",
+    verTrailer: "Watch Trailer",
+    elegirPlan: "CHOOSE YOUR EXPERIENCE",
+    activarPlan: "🚀 ACTIVATE PLAN",
+    carrito: "Cart",
+    pagar: "PAY NOW",
+    numeroTarjeta: "Card number",
+    fechaExp: "MM/YY",
+    cvv: "CVV",
+    nombreTarjeta: "Cardholder name",
+    pagoExitoso: "Simulated payment successful! Plan activated ✅",
+    camposRequeridos: "Please fill all fields",
+    estrellas: "Stars",
+    tuComentario: "Your comment (optional)",
+    graciasCalif: "Thanks for your rating!",
+    planActivo: "Active plan",
+    sinPlan: "No active plan",
+    datosPersonales: "Personal Info",
+    tarjetaGuardada: "Saved card",
+    sinTarjeta: "No card saved",
+    terminadoCon: "ends in"
+  }
+};
+
+// Idioma activo (se puede cambiar con el botón)
+window.VELORA_IDIOMA = localStorage.getItem("velora_idioma") || "es";
+window.t = () => IDIOMAS[window.VELORA_IDIOMA];

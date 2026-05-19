@@ -1,286 +1,248 @@
-/* ======================================
-   GENERAL & VIDEO FONDO
-====================================== */
+/* peliculas.css - VELORA Catálogo */
+
+/* ── FONDO ── */
 body {
-  background: #0D0915;
-  color: #F3F6FF;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  margin: 0; padding: 0; overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
 }
 
 #video-fondo {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  object-fit: cover;
-  filter: brightness(0.3) contrast(1.1);
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1; object-fit: cover;
+  filter: brightness(0.25) contrast(1.1);
 }
 
-/* ======================================
-   NAVBAR (Estilo Futurista)
-====================================== */
+[data-tema="claro"] #video-fondo {
+  filter: brightness(0.1) saturate(0.3);
+}
+
+/* ── NAVBAR ── */
 .navbar {
-  background: rgba(13, 9, 21, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 20px 40px;
-  border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-  display: flex;
-  justify-content: center;
+  background: var(--navbar-bg);
+  backdrop-filter: blur(14px);
+  padding: 14px 32px;
+  border-bottom: 1px solid rgba(0,240,255,0.2);
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 16px;
+  position: sticky; top: 0; z-index: 100;
+  flex-wrap: wrap;
+}
+
+[data-tema="claro"] .navbar {
+  border-bottom-color: rgba(0,102,204,0.2);
 }
 
 .logo-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  display: flex; align-items: center; gap: 12px;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+  width: 44px; height: 44px; border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0,240,255,0.4);
 }
 
 .logo-container h1 {
-  font-size: 32px;
-  font-weight: 900;
-  letter-spacing: 2px;
-  margin: 0;
-  background: linear-gradient(90deg, #00F0FF, #FF2BD6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
+  font-family: 'Syne', sans-serif;
+  font-size: 26px; font-weight: 900; margin: 0;
+  letter-spacing: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--magenta));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
 }
 
-/* ======================================
-   CONTROLES (Centrado y Estético)
-====================================== */
+.navbar-controls {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+}
+
+/* ── CONTROLES BÚSQUEDA ── */
 .main-controls {
-  display: flex;
-  justify-content: center;
-  padding: 50px 20px;
+  display: flex; justify-content: center;
+  padding: 40px 20px 20px;
 }
 
 .search-filter-group {
-  width: 100%;
-  max-width: 700px;
-  background: rgba(255, 255, 255, 0.03);
+  width: 100%; max-width: 680px;
+  background: var(--bg2);
   backdrop-filter: blur(15px);
-  padding: 40px;
-  border-radius: 25px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 30px; border-radius: 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 40px var(--shadow);
+  display: flex; flex-direction: column; gap: 16px;
 }
 
-/* Buscador Interno */
-.buscador-box {
-  display: flex;
-  gap: 10px;
-}
+.buscador-box { display: flex; gap: 10px; }
 
 #buscador {
   flex: 1;
-  background: rgba(10, 14, 23, 0.8);
-  border: 2px solid rgba(0, 240, 255, 0.4);
-  color: white;
-  padding: 15px 20px;
-  border-radius: 12px;
-  font-size: 16px;
-  outline: none;
-  transition: 0.3s;
+  background: var(--input-bg);
+  border: 2px solid rgba(0,240,255,0.3);
+  color: var(--text);
+  padding: 13px 18px; border-radius: 12px;
+  font-size: 15px; outline: none; transition: 0.3s;
+  font-family: inherit;
 }
 
+#buscador::placeholder { color: var(--text3); }
+
 #buscador:focus {
-  border-color: #00F0FF;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0,240,255,0.2);
 }
 
 .buscador-box button {
-  background: linear-gradient(135deg, #00F0FF, #7B2DFF);
-  border: none;
-  color: white;
-  padding: 0 25px;
-  border-radius: 12px;
-  font-weight: 900;
-  cursor: pointer;
-  transition: 0.3s;
-  width: auto;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  border: none; color: white;
+  padding: 0 22px; border-radius: 12px;
+  font-weight: 800; cursor: pointer;
+  transition: 0.3s; width: auto; letter-spacing: 1px;
 }
 
 .buscador-box button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 18px rgba(0,240,255,0.4);
 }
 
-/* Filtro Interno */
 #filtroGenero {
   width: 100%;
-  background: rgba(10, 14, 23, 0.8);
-  border: 2px solid rgba(255, 43, 214, 0.4);
-  color: white;
-  padding: 15px;
-  border-radius: 12px;
-  font-size: 15px;
-  outline: none;
-  cursor: pointer;
-  transition: 0.3s;
+  background: var(--input-bg);
+  border: 2px solid rgba(255,43,214,0.3);
+  color: var(--text); padding: 13px; border-radius: 12px;
+  font-size: 14px; outline: none; cursor: pointer;
+  transition: 0.3s; font-family: inherit;
 }
 
 #filtroGenero:focus {
-  border-color: #FF2BD6;
-  box-shadow: 0 0 15px rgba(255, 43, 214, 0.3);
+  border-color: var(--magenta);
+  box-shadow: 0 0 12px rgba(255,43,214,0.2);
 }
 
-/* ======================================
-   SLIDER DE ESTRENOS
-====================================== */
+/* ── SLIDER ── */
 #slider-estrenos {
-  width: 90%;
-  margin: 0 auto 40px auto;
-  display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding: 10px;
+  width: 92%; margin: 0 auto 32px;
+  display: flex; overflow-x: auto;
+  gap: 16px; padding: 8px;
   scrollbar-width: none;
 }
-
-#slider-estrenos::-webkit-scrollbar {
-  display: none;
-}
+#slider-estrenos::-webkit-scrollbar { display: none; }
 
 .slide-item {
-  min-width: 320px;
-  height: 180px;
-  border-radius: 20px;
-  background-size: cover;
-  background-position: center;
-  flex-shrink: 0;
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-  position: relative;
+  min-width: 300px; height: 165px;
+  border-radius: 18px; background-size: cover;
+  background-position: center; flex-shrink: 0;
+  border: 1px solid rgba(0,240,255,0.15);
+  display: flex; align-items: flex-end;
+  overflow: hidden; cursor: pointer;
+  transition: transform 0.3s;
 }
+
+.slide-item:hover { transform: scale(1.03); }
 
 .slide-content {
   background: linear-gradient(transparent, rgba(0,0,0,0.9));
-  width: 100%;
-  padding: 15px;
+  width: 100%; padding: 14px;
 }
 
-/* ======================================
-   GRID DE PELÍCULAS
-====================================== */
+/* ── GRID PELÍCULAS ── */
 .contenedor {
-  width: 90%;
-  margin: auto;
+  width: 92%; margin: auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
-  padding-bottom: 60px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 28px; padding-bottom: 60px;
 }
 
 .pelicula {
-  background: rgba(26, 22, 37, 0.6);
+  background: var(--card-bg);
   backdrop-filter: blur(5px);
-  border-radius: 22px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 20px; overflow: hidden;
+  border: 1px solid var(--border);
   transition: 0.4s;
 }
 
 .pelicula:hover {
-  transform: translateY(-10px);
-  border-color: #00F0FF;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+  transform: translateY(-8px);
+  border-color: var(--cyan);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
 .pelicula img {
-  width: 100%;
-  height: 380px;
-  object-fit: cover;
+  width: 100%; height: 360px; object-fit: cover;
+  display: block;
 }
 
-.pelicula-contenido {
-  padding: 20px;
-}
-
+.pelicula-contenido { padding: 18px; }
 .pelicula-contenido h2 {
-  font-size: 20px;
-  margin: 0 0 10px 0;
-  color: #FFF;
+  font-family: 'Syne', sans-serif;
+  font-size: 18px; margin: 0 0 8px;
+  color: var(--text);
 }
 
 .categoria {
-  color: #00F0FF;
-  font-weight: bold;
-  font-size: 13px;
-  margin-bottom: 10px;
+  color: var(--cyan); font-weight: 700;
+  font-size: 12px; margin-bottom: 8px;
 }
 
+[data-tema="claro"] .categoria { color: var(--purple); }
+
 .descripcion {
-  color: #A1A6C6;
-  font-size: 14px;
-  height: 60px;
-  overflow: hidden;
-  margin-bottom: 15px;
+  color: var(--text2); font-size: 13px;
+  height: 56px; overflow: hidden; margin-bottom: 12px;
+  line-height: 1.5;
 }
 
 .estrellas {
-  color: #FFD700;
-  font-weight: bold;
-  display: block;
-  margin-bottom: 15px;
+  color: #FFD700; font-weight: 700;
+  display: block; margin-bottom: 12px; font-size: 14px;
 }
 
-/* ======================================
-   BOTONES CARDS
-====================================== */
 .boton-trailer {
-  display: block;
-  text-align: center;
+  display: block; text-align: center;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #00F0FF;
-  color: #00F0FF;
-  padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 8px;
-  font-weight: bold;
+  background: var(--bg2);
+  border: 1px solid var(--cyan);
+  color: var(--cyan); padding: 9px;
+  border-radius: 10px; margin-bottom: 8px;
+  font-weight: 700; font-size: 13px;
   transition: 0.3s;
 }
 
 .boton-trailer:hover {
-  background: #00F0FF;
-  color: #000;
+  background: var(--cyan); color: #000;
+}
+
+[data-tema="claro"] .boton-trailer:hover {
+  background: var(--purple); color: #fff; border-color: var(--purple);
 }
 
 .pelicula button {
   width: 100%;
-  background: linear-gradient(135deg, #FF2BD6, #7B2DFF);
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  font-weight: bold;
-  cursor: pointer;
+  background: linear-gradient(135deg, var(--magenta), var(--purple));
+  border: none; color: #fff; padding: 9px;
+  border-radius: 10px; font-weight: 700;
+  cursor: pointer; font-size: 13px;
+  transition: 0.3s;
 }
 
-/* ======================================
-   FOOTER
-====================================== */
+.pelicula button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255,43,214,0.35);
+}
+
+/* ── FOOTER ── */
 footer {
-  text-align: center;
-  padding: 40px;
-  background: rgba(13, 9, 21, 0.9);
-  color: #666;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  text-align: center; padding: 36px;
+  background: var(--navbar-bg);
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .navbar { padding: 12px 16px; }
+  .logo-container h1 { font-size: 20px; }
+  .contenedor { width: 96%; gap: 18px; }
+  #weather-widget { display: none; } /* en móvil se oculta el clima para ahorrar espacio */
 }

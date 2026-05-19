@@ -15,70 +15,101 @@
 
   <section class="overlay"></section>
 
+  <!-- Controles Globales (Tema e Idioma) -->
+  <div class="global-controls">
+    <button onclick="cambiarTema()" class="btn-control" id="btn-tema">🌙</button>
+    <select onchange="cambiarIdioma(this.value)" class="btn-control select-idioma">
+      <option value="es">ES</option>
+      <option value="en">EN</option>
+    </select>
+  </div>
+
   <main class="main-wrapper">
     
     <header class="hero">
-      <h1>DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span></h1>
-      <p class="titulo">Miles de películas y series para ver cuando quieras</p>
+      
+      <h1 data-i18n="titulo">DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span></h1>
+      <p class="titulo" data-i18n="subtitulo">Miles de películas y series para ver cuando quieras</p>
       
       <nav class="features">
-        <span class="feature">🎬 Estrenos exclusivos</span>
-        <span class="feature">📺 Calidad HD</span>
-        <span class="feature">⭐ Para todos los gustos</span>
+        <span class="feature" data-i18n="f1">🎬 Estrenos exclusivos</span>
+        <span class="feature" data-i18n="f2">📺 Calidad HD</span>
+        <span class="feature" data-i18n="f3">⭐ Para todos los gustos</span>
       </nav>
     </header>
 
     <section class="contenedor-auth">
 
-      <article id="registro" class="auth-box">
-        <h2>Registro</h2>
+      <!-- LOGIN PRIMERO (Se muestra por defecto) -->
+      <article id="login" class="auth-box">
+        <h2 data-i18n="login_titulo">Iniciar Sesión</h2>
+        <input id="emailLogin" type="email" placeholder="Correo electrónico">
+        <input id="passwordLogin" type="password" placeholder="Contraseña">
+        <button onclick="login()" class="btn-cyan" data-i18n="btn_login">INGRESAR</button>
+        <p class="link" onclick="mostrarRegistro()" data-i18n="link_registro">Crear una cuenta nueva</p>
+        <p class="link" onclick="mostrarRecuperar()" data-i18n="link_recuperar">¿Olvidaste tu contraseña?</p>
+      </article>
+
+      <!-- REGISTRO (Oculto por defecto) -->
+      <article id="registro" class="auth-box oculto">
+        <h2 data-i18n="registro_titulo">Registro</h2>
         <input id="nombre" type="text" placeholder="Nombre">
         <input id="edad" type="number" placeholder="Edad">
         <input id="email" type="email" placeholder="Correo electrónico">
         <input id="password" type="password" placeholder="Contraseña">
-        <button onclick="registrar()">REGISTRARSE</button>
-        <p class="link" onclick="mostrarLogin()">¿Ya tienes cuenta? Inicia sesión</p>
+        <button onclick="registrar()" data-i18n="btn_registro">REGISTRARSE</button>
+        <p class="link" onclick="mostrarLogin()" data-i18n="link_login">¿Ya tienes cuenta? Inicia sesión</p>
       </article>
 
-      <article id="login" class="auth-box oculto">
-        <h2>Iniciar Sesión</h2>
-        <input id="emailLogin" type="email" placeholder="Correo electrónico">
-        <input id="passwordLogin" type="password" placeholder="Contraseña">
-        <button onclick="login()" class="btn-cyan">INGRESAR</button>
-        <p class="link" onclick="mostrarRegistro()">Crear una cuenta nueva</p>
-        <p class="link" onclick="mostrarRecuperar()">¿Olvidaste tu contraseña?</p>
-      </article>
-
+      <!-- RECUPERAR (Oculto por defecto) -->
       <article id="otra" class="auth-box oculto">
-        <h2>Recuperar</h2>
-        <p class="instruccion">Enviaremos un enlace a tu correo</p>
+        <h2 data-i18n="recuperar_titulo">Recuperar</h2>
+        <p class="instruccion" data-i18n="recuperar_instruccion">Enviaremos un enlace a tu correo</p>
         <input id="emailRecuperar" type="email" placeholder="Tu correo registrado">
-        <button onclick="recuperarPassword()">RECUPERAR</button>
-        <p class="link" onclick="mostrarLogin()">Volver al inicio</p>
+        <button onclick="recuperarPassword()" data-i18n="btn_recuperar">RECUPERAR</button>
+        <p class="link" onclick="mostrarLogin()" data-i18n="link_volver">Volver al inicio</p>
       </article>
 
     </section>
   </main>
 
   <script>
+    // Lógica de visibilidad
     function mostrarLogin() {
       document.getElementById("login").classList.remove("oculto");
       document.getElementById("registro").classList.add("oculto");
       document.getElementById("otra").classList.add("oculto");
     }
-
     function mostrarRegistro() {
       document.getElementById("registro").classList.remove("oculto");
       document.getElementById("login").classList.add("oculto");
       document.getElementById("otra").classList.add("oculto");
     }
-
     function mostrarRecuperar() {
       document.getElementById("otra").classList.remove("oculto");
       document.getElementById("login").classList.add("oculto");
       document.getElementById("registro").classList.add("oculto");
     }
-  </script>
 
+    // Tema Claro/Oscuro
+    function cambiarTema() {
+      document.body.classList.toggle("light-mode");
+      const btn = document.getElementById("btn-tema");
+      btn.innerText = document.body.classList.contains("light-mode") ? "☀️" : "🌙";
+    }
+
+    // Idioma
+    const traducciones = {
+      es: { titulo: 'DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span>', subtitulo: 'Miles de películas y series para ver cuando quieras', f1: '🎬 Estrenos exclusivos', f2: '📺 Calidad HD', f3: '⭐ Para todos los gustos', login_titulo: 'Iniciar Sesión', btn_login: 'INGRESAR', link_registro: 'Crear una cuenta nueva', link_recuperar: '¿Olvidaste tu contraseña?', registro_titulo: 'Registro', btn_registro: 'REGISTRARSE', link_login: '¿Ya tienes cuenta? Inicia sesión', recuperar_titulo: 'Recuperar', recuperar_instruccion: 'Enviaremos un enlace a tu correo', btn_recuperar: 'RECUPERAR', link_volver: 'Volver al inicio' },
+      en: { titulo: 'DISCOVER STORIES <br> <span class="highlight">WITHOUT LIMITS</span>', subtitulo: 'Thousands of movies and series to watch anytime', f1: '🎬 Exclusive releases', f2: '📺 HD Quality', f3: '⭐ For all tastes', login_titulo: 'Log In', btn_login: 'LOG IN', link_registro: 'Create a new account', link_recuperar: 'Forgot your password?', registro_titulo: 'Sign Up', btn_registro: 'SIGN UP', link_login: 'Already have an account? Log in', recuperar_titulo: 'Recover', recuperar_instruccion: 'We will send a link to your email', btn_recuperar: 'RECOVER', link_volver: 'Go back' }
+    };
+    function cambiarIdioma(idioma) {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (traducciones[idioma][key]) el.innerHTML = traducciones[idioma][key];
+      });
+    }
+  </script>
+  <script type="module" src="./index.js"></script>
 </body>
 </html>

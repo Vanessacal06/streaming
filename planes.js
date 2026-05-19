@@ -1,266 +1,168 @@
-// ======================================
-// CONEXIÓN A SUPABASE
-// ======================================
+// planes.js - VELORA
 
 const supabaseClient = window.supabase.createClient(
-  "https://wokruyihvhbkcgvlhsnk.supabase.co",
-  "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN"
+  "https://ytdkmyotjzaissxfjjuu.supabase.co",
+  "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
 );
+window.supabaseClient = supabaseClient;
 
-// ======================================
-// CARGAR PLANES
-// ======================================
-
+// ── CARGAR PLANES ─────────────────────────────────────────────
 async function cargarPlanes() {
-
   const { data: planes, error } = await supabaseClient
     .from("suscripciones")
-    .select("*");
+    .select("*")
+    .order("precio", { ascending: true });
 
   if (error) {
-
-    console.error(
-      "Error al cargar planes:",
-      error.message
-    );
-
+    console.error("Error al cargar planes:", error.message);
     return;
   }
 
-  const contenedor =
-    document.getElementById("planes");
-
+  const contenedor = document.getElementById("planes");
+  if (!contenedor) return;
   contenedor.innerHTML = "";
 
-  // ======================================
-  // GENERAR TARJETAS
-  // ======================================
+  const txt = window.t();
 
   planes.forEach(plan => {
-
-    const card =
-      document.createElement("section");
-
+    const card = document.createElement("section");
     card.classList.add("plan-card");
 
-    // Detectar premium
-    const premium =
-      plan.nombre.toLowerCase()
-      .includes("premium");
+    const isPremium = plan.nombre.toLowerCase().includes("premium");
+    const isEstandar = plan.nombre.toLowerCase().includes("estándar") ||
+                       plan.nombre.toLowerCase().includes("estandar");
 
-    // Info personalizada
-    let info = "";
-
-    if (
-      plan.nombre.toLowerCase()
-      .includes("básico")
-    ) {
-
-      info =
-        "1 pantalla • HD • Acceso limitado";
+    let features = "";
+    if (plan.nombre.toLowerCase().includes("básico") || plan.nombre.toLowerCase().includes("basico")) {
+      features = `<li>1 pantalla</li><li>Calidad HD</li><li>Catálogo general</li><li>Sin anuncios</li>`;
+    } else if (isEstandar) {
+      features = `<li>2 pantallas</li><li>Full HD</li><li>Más series y películas</li><li>Sin anuncios</li><li>Multidispositivo</li>`;
+    } else {
+      features = `<li>4 pantallas</li><li>Ultra HD 4K</li><li>Todo el catálogo</li><li>Sin anuncios</li><li>Multidispositivo</li><li>Contenido exclusivo</li>`;
     }
-
-    else if (
-      plan.nombre.toLowerCase()
-      .includes("estándar")
-    ) {
-
-      info =
-        "2 pantallas • Full HD • Más contenido";
-    }
-
-    else if (
-      plan.nombre.toLowerCase()
-      .includes("premium")
-    ) {
-
-      info =
-        "4 pantallas • Ultra HD 4K • Experiencia total";
-    }
-
-    else {
-
-      info =
-        "Streaming ilimitado • Calidad premium";
-    }
-
-    // ======================================
-    // HTML DE LA TARJETA
-    // ======================================
 
     card.innerHTML = `
-
-      ${premium
-        ? '<span class="badge">TOP</span>'
-        : ''
-      }
-
-      <h3>
-        ${plan.nombre}
-      </h3>
-
-      <!-- PRECIO -->
-      <section class="price">
-
-        <span class="currency">
-          COP
-        </span>
-
-        <span class="number">
-          ${plan.precio}
-        </span>
-
-        <span class="month">
-          /mes
-        </span>
-
-      </section>
-
-      <!-- BENEFICIOS -->
-      <ul class="features">
-
-        <li>Streaming HD y 4K</li>
-
-        <li>Películas ilimitadas</li>
-
-        <li>Series exclusivas</li>
-
-        <li>Sin anuncios</li>
-
-        <li>Acceso multidispositivo</li>
-
-      </ul>
-
-      <!-- INFO PLAN -->
-      <p class="plan-info">
-
-        ${info}
-
-      </p>
-
-      <!-- BOTÓN -->
-      <button
-        class="btn-plan"
-        onclick="seleccionarPlan(
-          ${plan.identificacion},
-          '${plan.nombre}'
-        )">
-
-        🚀 ACTIVAR PLAN
-
+      ${isPremium ? '<span class="badge">TOP</span>' : ''}
+      <h3>${plan.nombre}</h3>
+      <div class="price">
+        <span class="currency">COP</span>
+        <span class="number">${Number(plan.precio).toLocaleString("es-CO")}</span>
+        <span class="month">/mes</span>
+      </div>
+      <ul class="features">${features}</ul>
+      <button class="btn-plan" onclick="seleccionarPlan(${plan.id}, '${plan.nombre}', ${plan.precio})">
+        ${txt.activarPlan || "🚀 ACTIVAR PLAN"}
       </button>
-
     `;
-
     contenedor.appendChild(card);
-
   });
-
 }
 
-// ======================================
-// SELECCIONAR PLAN
-// ======================================
+// ── SELECCIONAR PLAN → abrir carrito ─────────────────────────
+async function seleccionarPlan(idPlan, nombrePlan, precio) {
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
+  if (error || !user) {
+    alert("Debes iniciar sesión primero.");
+    window.location.href = "index.html";
+    return;
+  }
+  // Abrir modal carrito
+  window.abrirCarrito(idPlan, nombrePlan, precio);
+}
 
-async function seleccionarPlan(
-  idPlan,
-  nombrePlan
-) {
+// ── PROCESAR PAGO SIMULADO ────────────────────────────────────
+async function procesarPago() {
+  const txt = window.t();
+  const nombre  = document.getElementById("pago-nombre").value.trim();
+  const numero  = document.getElementById("pago-numero").value.replace(/\s/g, "");
+  const exp     = document.getElementById("pago-exp").value.trim();
+  const cvv     = document.getElementById("pago-cvv").value.trim();
 
-  const {
-    data: { user },
-    error: userError
-  } =
-    await supabaseClient.auth.getUser();
-
-  // Validar login
-  if (userError || !user) {
-
-    alert(
-      "Debes iniciar sesión primero."
-    );
-
+  // Validación básica
+  if (!nombre || numero.length < 12 || exp.length < 4 || cvv.length < 3) {
+    alert(txt.camposRequeridos || "Por favor completa todos los campos de pago.");
     return;
   }
 
-  // Actualizar perfil
-  const { error } =
-    await supabaseClient
-      .from("perfiles")
-      .update({
+  const modal = document.getElementById("modal-carrito");
+  const idPlan     = modal.dataset.planId;
+  const nombrePlan = modal.dataset.planNombre;
 
-        id_suscripcion: idPlan,
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) { alert("Sesión expirada."); return; }
 
-        tipo_suscripcion: nombrePlan
+  // Guardar los últimos 4 dígitos de la tarjeta en el perfil
+  const ultimos4 = numero.slice(-4);
 
-      })
-      .eq(
-        "identificacion",
-        user.id
-      );
+  const { error } = await supabaseClient
+    .from("perfiles")
+    .update({
+      id_suscripcion: parseInt(idPlan),
+      tipo_suscripcion: nombrePlan,
+      tarjeta_ultimos4: ultimos4,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", user.id);
 
-  // Error
   if (error) {
-
-    alert(
-      "Error al actualizar suscripción: "
-      + error.message
-    );
-
+    alert("Error al activar el plan: " + error.message);
+    return;
   }
 
-  // Éxito
-  else {
-
-    alert(
-      `Plan ${nombrePlan} activado correctamente ✅`
-    );
-
-    window.location.href =
-      "peliculas.html";
-  }
-
+  alert(txt.pagoExitoso || "¡Pago simulado exitoso! Plan activado ✅");
+  cerrarCarrito();
+  window.location.href = "peliculas.html";
 }
 
-// ======================================
-// EXPORTAR FUNCIONES
-// ======================================
+// ── CARGAR DATOS DE PERFIL ────────────────────────────────────
+async function cargarDatosPerfil() {
+  const txt = window.t();
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return;
 
+  const { data: perfil } = await supabaseClient
+    .from("perfiles")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const contenido = document.getElementById("perfil-contenido");
+  if (!contenido) return;
+
+  if (!perfil) {
+    contenido.innerHTML = "<p>No se encontró perfil.</p>";
+    return;
+  }
+
+  const plan = perfil.tipo_suscripcion || txt.sinPlan;
+  const tarjeta = perfil.tarjeta_ultimos4
+    ? `•••• •••• •••• ${perfil.tarjeta_ultimos4}`
+    : txt.sinTarjeta;
+
+  contenido.innerHTML = `
+    <div class="perfil-dato">
+      <span>${txt.nombre || "Nombre"}</span>
+      <span>${perfil.nombre || "—"}</span>
+    </div>
+    <div class="perfil-dato">
+      <span>Email</span>
+      <span>${perfil.email || user.email}</span>
+    </div>
+    <div class="perfil-dato">
+      <span>${txt.planActivo || "Plan activo"}</span>
+      <span>${plan}</span>
+    </div>
+    <div class="perfil-dato">
+      <span>${txt.tarjetaGuardada || "Tarjeta guardada"}</span>
+      <span>${tarjeta}</span>
+    </div>
+    ${perfil.id_suscripcion ? `<div class="badge-plan">${plan}</div>` : ""}
+  `;
+}
+
+window.cargarDatosPerfil = cargarDatosPerfil;
 window.cargarPlanes = cargarPlanes;
+window.seleccionarPlan = seleccionarPlan;
+window.procesarPago = procesarPago;
 
-window.seleccionarPlan =
-  seleccionarPlan;
-
-// ======================================
-// CARGA INICIAL
-// ======================================
-
-cargarPlanes();
-
-// ======================================
-// FILTRO PELÍCULAS
-// ======================================
-
-function filtrar(categoria) {
-
-  let peliculas =
-    document.querySelectorAll('.pelicula');
-
-  peliculas.forEach(peli => {
-
-    if (categoria === 'todas') {
-
-      peli.style.display = 'block';
-    }
-
-    else {
-
-      peli.style.display =
-        peli.classList.contains(categoria)
-        ? 'block'
-        : 'none';
-    }
-
-  });
-
-}
+document.addEventListener("DOMContentLoaded", cargarPlanes);

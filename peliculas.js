@@ -1,139 +1,210 @@
-// [Mantener tu conexión a Supabase y variables iniciales igual]
-const supabaseClient = window.supabase.createClient(
-    "https://wokruyihvhbkcgvlhsnk.supabase.co",
-    "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN"
-);
+// peliculas.js - VELORA Catálogo
+
+// supabaseClient se define en el inline script de peliculas.html
+// API_KEY viene de config.js
 
 let generoActivo = "Todos";
+const tmdbIdsRenderizados = [];
 
-// Lógica para el Slider de Estrenos
-async function cargarSlider(peliculas) {
-    const slider = document.getElementById("slider-estrenos");
-    slider.innerHTML = "";
-    
-    // Tomamos las primeras 6 para el slider
-    const estrenos = peliculas.slice(0, 6);
-    
-    estrenos.forEach(p => {
-        const slide = document.createElement("article");
-        slide.className = "slide-item";
-        slide.style.backgroundImage = `url('https://image.tmdb.org/t/p/w1280${p.backdrop_path}')`;
-        
-        slide.innerHTML = `
-            <section class="slide-content">
-                <h3 style="margin:0; font-size:16px;">${p.title}</h3>
-                <span style="color:#00F0FF; font-size:12px;">Estreno Recomendado</span>
-            </section>
-        `;
-        slider.appendChild(slide);
+
+
+// ── SINCRONIZAR DATOS CON SUPABASE ────────────────────────────
+async function sincronizarConSupabase(peliculasTMDB) {
+  if (!peliculasTMDB || peliculasTMDB.length === 0) return;
+
+  try {
+    // 1. Guardar Categorías (usamos el mapa que ya tienes)
+    const categoriasUpsert = Object.entries(GENEROS).map(([id, nombre]) => ({
+      id_tmdb: parseInt(id),
+      nombre: nombre
+    }));
+    await supabaseClient.from("categorias").upsert(categoriasUpsert, { onConflict: 'id_tmdb' });
+
+    // 2. Guardar Películas
+    const peliculasUpsert = peliculasTMDB.map(p => ({
+      id_tmdb: p.id,
+      titulo: p.title,
+      descripcion: p.overview,
+      poster_path: p.poster_path,
+      fecha_lanzamiento: p.release_date || null
+    }));
+    await supabaseClient.from("peliculas").upsert(peliculasUpsert, { onConflict: 'id_tmdb' });
+
+    // 3. Guardar Relación Película-Categoría
+    const relacionesUpsert = [];
+    peliculasTMDB.forEach(p => {
+      if (p.genre_ids) {
+        p.genre_ids.forEach(catId => {
+          relacionesUpsert.push({ 
+            pelicula_id_tmdb: p.id, 
+            categoria_id_tmdb: catId 
+          });
+        });
+      }
     });
+    
+    if (relacionesUpsert.length > 0) {
+      await supabaseClient.from("pelicula_categorias").upsert(relacionesUpsert, { onConflict: ['pelicula_id_tmdb', 'categoria_id_tmdb'] });
+    }
+  } catch (err) {
+    console.error("Error sincronizando con Supabase:", err);
+  }
 }
 
-// [Tu función mostrarCategoria se queda igual]
+// ── MAPA GÉNEROS TMDB ─────────────────────────────────────────
+const GENEROS = {
+  28:"Acción", 12:"Aventura", 16:"Animación", 35:"Comedia",
+  80:"Crimen", 99:"Documental", 18:"Drama", 10751:"Familiar",
+  14:"Fantasía", 36:"Historia", 27:"Terror", 10402:"Música",
+  9648:"Misterio", 10749:"Romance", 878:"Ciencia ficción", 53:"Suspenso"
+};
+
 function mostrarCategoria(pelicula) {
-    const categoriasTMDB = {
-        28: "Acción", 12: "Aventura", 16: "Animación", 35: "Comedia", 80: "Crimen",
-        99: "Documental", 18: "Drama", 10751: "Familiar", 14: "Fantasía",
-        36: "Historia", 27: "Terror", 10402: "Música", 9648: "Misterio",
-        10749: "Romance", 878: "Ciencia ficción", 53: "Suspenso"
-    };
-    if (!pelicula.genre_ids || pelicula.genre_ids.length === 0) return "Sin categoría";
-    const resultado = pelicula.genre_ids.map(id => categoriasTMDB[id]).filter(Boolean);
-    return resultado.length > 0 ? resultado.join(", ") : "Sin categoría";
+  if (!pelicula.genre_ids?.length) return "Sin categoría";
+  const r = pelicula.genre_ids.map(id => GENEROS[id]).filter(Boolean);
+  return r.length ? r.join(", ") : "Sin categoría";
 }
 
-// [Modificación leve en crearCard para el nuevo estilo]
-function crearCard(pelicula) {
-    const imagen = pelicula.poster_path ? `https://image.tmdb.org/t/p/w500${pelicula.poster_path}` : "https://via.placeholder.com/500x750?text=Sin+Imagen";
-    const trailer = `https://www.youtube.com/results?search_query=${pelicula.title}+trailer`;
-    const article = document.createElement("article");
-    article.classList.add("pelicula");
-    article.innerHTML = `
-        <img src="${imagen}" alt="${pelicula.title}">
-        <section class="pelicula-contenido">
-            <h2>${pelicula.title}</h2>
-            <p class="categoria">🎬 ${mostrarCategoria(pelicula)}</p>
-            <p class="descripcion">${pelicula.overview}</p>
-            <span class="estrellas">⭐ ${pelicula.vote_average}</span>
-            <a href="${trailer}" target="_blank" class="boton-trailer">Ver Trailer</a>
-            <button onclick="calificar(${pelicula.id})">Calificar</button>
-        </section>
+// ── SLIDER DE ESTRENOS ────────────────────────────────────────
+function cargarSlider(peliculas) {
+  const slider = document.getElementById("slider-estrenos");
+  if (!slider) return;
+  slider.innerHTML = "";
+  peliculas.slice(0, 8).forEach(p => {
+    const slide = document.createElement("article");
+    slide.className = "slide-item";
+    slide.style.backgroundImage = p.backdrop_path
+      ? `url('https://image.tmdb.org/t/p/w1280${p.backdrop_path}')`
+      : "none";
+    slide.innerHTML = `
+      <section class="slide-content">
+        <h3 style="margin:0;font-size:15px;">${p.title}</h3>
+        <span style="color:#00F0FF;font-size:12px;">⭐ ${p.vote_average?.toFixed(1)}</span>
+      </section>
     `;
-    return article;
+    slide.onclick = () => crearCard(p) && null; // clic en slider hace scroll a la peli
+    slider.appendChild(slide);
+  });
 }
 
-// CARGAR PELÍCULAS (Incluye llamada al slider)
+// ── CREAR TARJETA PELÍCULA ────────────────────────────────────
+function crearCard(pelicula) {
+  const txt = window.t?.() || {};
+  const imagen = pelicula.poster_path
+    ? `https://image.tmdb.org/t/p/w500${pelicula.poster_path}`
+    : "https://via.placeholder.com/500x750?text=Sin+Imagen";
+
+  const article = document.createElement("article");
+  article.classList.add("pelicula");
+  article.id = `pelicula-${pelicula.id}`;
+
+  article.innerHTML = `
+    <img src="${imagen}" alt="${pelicula.title}" loading="lazy">
+    <section class="pelicula-contenido">
+      <h2>${pelicula.title}</h2>
+      <p class="categoria">🎬 ${mostrarCategoria(pelicula)}</p>
+      <p class="descripcion">${pelicula.overview || "Sin descripción disponible."}</p>
+      <span class="estrellas">⭐ ${pelicula.vote_average?.toFixed(1) || "N/A"} TMDB</span>
+      <span class="estrellas" id="promedio-${pelicula.id}" style="font-size:13px;color:#00F0FF;"></span>
+      
+      <!-- Enlace a la nueva página de detalle -->
+      <a href="detalle.html?id=${pelicula.id}" class="boton-trailer">
+        ${txt.verTrailer || "Ver Detalle & Trailer"}
+      </a>
+      <a href="detalle.html?id=${pelicula.id}" class="boton-calificar">
+        ${txt.calificar || "Calificar"} ⭐
+      </a>
+    </section>
+  `;
+
+  if (!tmdbIdsRenderizados.includes(pelicula.id)) {
+    tmdbIdsRenderizados.push(pelicula.id);
+  }
+
+  return article;
+}
+
+// ── CARGAR PELÍCULAS ──────────────────────────────────────────
 async function cargarPeliculas() {
-    try {
-        if (typeof API_KEY === "undefined") { alert("Error cargando API KEY"); return; }
-        const contenedor = document.getElementById("peliculas");
-        contenedor.innerHTML = "";
+  const contenedor = document.getElementById("peliculas");
+  if (!contenedor) return;
+  contenedor.innerHTML = "<p style='text-align:center;color:var(--text2);padding:40px'>Cargando...</p>";
+  tmdbIdsRenderizados.length = 0;
 
-        const { data: { user } } = await supabaseClient.auth.getUser();
-        if (!user) { alert("Debes iniciar sesión."); return; }
-
-        const { data: perfil } = await supabaseClient.from("perfiles").select("tipo_suscripcion").eq("identificacion", user.id).single();
-
-        const respuesta = await fetch(`https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=es-ES&page=1`);
-        const datos = await respuesta.json();
-
-        // Llenar el slider con los datos obtenidos
-        cargarSlider(datos.results);
-
-        for (const pelicula of datos.results) {
-            if (generoActivo !== "Todos") {
-                const categorias = mostrarCategoria(pelicula);
-                if (!categorias.includes(generoActivo)) continue;
-            }
-            if (perfil.tipo_suscripcion === "Básico" && pelicula.id % 2 === 0) continue;
-            
-            // Lógica de guardado en BD [Se mantiene igual]
-            contenedor.appendChild(crearCard(pelicula));
-        }
-    } catch (error) { console.error(error); }
-}
-
-// [Funciones buscarPeliculas, calificar y filtrarGeneroSelect se mantienen igual]
-async function buscarPeliculas() {
-    const texto = document.getElementById("buscador").value;
-    if (texto.trim() === "") { cargarPeliculas(); return; }
-    const respuesta = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-ES&query=${texto}`);
-    const datos = await respuesta.json();
-    const contenedor = document.getElementById("peliculas");
-    contenedor.innerHTML = "";
-    datos.results.forEach(pelicula => {
-        if (generoActivo !== "Todos") {
-            const categorias = mostrarCategoria(pelicula);
-            if (!categorias.includes(generoActivo)) return;
-        }
-        contenedor.appendChild(crearCard(pelicula));
-    });
-}
-
-async function calificar(idTmdb) {
-    const comentario = prompt("Escribe tu comentario:");
-    const puntuacion = prompt("Califica de 1 a 5:");
+  try {
+    // Verificar sesión
     const { data: { user } } = await supabaseClient.auth.getUser();
-    await supabaseClient.from("calificaciones").insert([{
-        identificacion_usuario: user.id,
-        identificacion_tmdb: idTmdb,
-        comentario: comentario,
-        puntuacion: parseInt(puntuacion)
-    }]);
-    alert("¡Gracias por tu calificación!");
+    if (!user) {
+      alert("Debes iniciar sesión.");
+      window.location.href = "index.html";
+      return;
+    }
+
+    // Obtener perfil y tipo de suscripción
+    const { data: perfil } = await supabaseClient
+      .from("perfiles").select("tipo_suscripcion").eq("id", user.id).maybeSingle();
+
+    const resp = await fetch(
+      `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=es-ES&page=1`
+    );
+    const datos = await resp.json();
+
+    
+
+    contenedor.innerHTML = "";
+    for (const pelicula of datos.results) {
+      // Filtrar por género
+      if (generoActivo !== "Todos") {
+        if (!mostrarCategoria(pelicula).includes(generoActivo)) continue;
+      }
+      // Restricción por plan básico
+      if (perfil?.tipo_suscripcion?.toLowerCase().includes("básico") && pelicula.id % 2 === 0) continue;
+
+      contenedor.appendChild(crearCard(pelicula));
+    }
+
+    // Cargar promedios de calificaciones de usuarios
+    if (window.cargarPromedios) {
+      await cargarPromedios(tmdbIdsRenderizados);
+    }
+
+  } catch (err) {
+    console.error("Error cargando películas:", err);
+    contenedor.innerHTML = "<p style='text-align:center;color:#ff4444;padding:40px'>Error al cargar. Revisa tu conexión.</p>";
+  }
 }
 
+// ── BUSCAR ────────────────────────────────────────────────────
+async function buscarPeliculas() {
+  const texto = document.getElementById("buscador").value.trim();
+  if (!texto) { cargarPeliculas(); return; }
+
+  const contenedor = document.getElementById("peliculas");
+  contenedor.innerHTML = "";
+  tmdbIdsRenderizados.length = 0;
+
+  const resp = await fetch(
+    `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-ES&query=${encodeURIComponent(texto)}`
+  );
+  const datos = await resp.json();
+
+  datos.results.forEach(pelicula => {
+    if (generoActivo !== "Todos" && !mostrarCategoria(pelicula).includes(generoActivo)) return;
+    contenedor.appendChild(crearCard(pelicula));
+  });
+
+  if (window.cargarPromedios) await cargarPromedios(tmdbIdsRenderizados);
+}
+
+// ── FILTRAR POR GÉNERO ────────────────────────────────────────
 function filtrarGeneroSelect() {
-    const select = document.getElementById("filtroGenero");
-    generoActivo = select.value;
-    cargarPeliculas();
+  generoActivo = document.getElementById("filtroGenero").value;
+  cargarPeliculas();
 }
 
-
-
-window.cargarPeliculas = cargarPeliculas;
-window.buscarPeliculas = buscarPeliculas;
-window.calificar = calificar;
+// ── EXPORTAR ─────────────────────────────────────────────────
+window.cargarPeliculas    = cargarPeliculas;
+window.buscarPeliculas    = buscarPeliculas;
 window.filtrarGeneroSelect = filtrarGeneroSelect;
 
 document.addEventListener("DOMContentLoaded", cargarPeliculas);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle | VELORA</title>
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./detalle.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./efectos.js"></script>
+</head>
+<body>
+
+  <video autoplay muted loop class="video-fondo">
+    <source src="video.mp4" type="video/mp4">
+  </video>
+  <section class="overlay"></section>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <section class="logo-container">
+      <a href="peliculas.html">
+        
+      </a>
+      <h1>VELORA</h1>
+    </section>
+    <div class="navbar-controls">
+      <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
+      <button class="util-btn" onclick="abrirPerfil()">👤</button>
+      <button class="util-btn btn-logout" onclick="cerrarSesionDetalle()">🚪</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="detalle-wrapper">
+    
+    <!-- Trailer -->
+    <section class="trailer-container" id="trailer-container">
+      <p style="color:var(--text2)">Cargando trailer...</p>
+    </section>
+
+    <!-- Info de la película -->
+    <section class="info-container" id="info-container">
+      <!-- Se llena con JS -->
+    </section>
+
+    <!-- Sección de Calificar y Comentar -->
+    <section class="calificar-section">
+      <h2>Califica y Comenta</h2>
+      
+      <div class="estrellas-input" id="estrellas-input">
+        <span data-val="1">☆</span>
+        <span data-val="2">☆</span>
+        <span data-val="3">☆</span>
+        <span data-val="4">☆</span>
+        <span data-val="5">☆</span>
+      </div>
+      <p id="estrellas-error" style="color:#ff4444;font-size:13px;display:none;">Selecciona al menos 1 estrella</p>
+
+      <textarea id="comentario-input" placeholder="Escribe tu comentario aquí... (opcional)"></textarea>
+      
+      <button onclick="enviarCalificacion()" class="btn-cyan">ENVIAR CALIFICACIÓN</button>
+    </section>
+
+    <!-- Lista de Comentarios -->
+    <section class="comentarios-section">
+      <h2>Opiniones de los usuarios</h2>
+      <div id="lista-comentarios">
+        <!-- Se llena con JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL PERFIL -->
+  <div class="modal-overlay oculto" id="modal-perfil">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarPerfil()">✕</button>
+      <h3>👤 Mi Perfil</h3>
+      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
+    </div>
+  </div>
+
+  <script>
+    // Supabase global para esta página
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL, // Viene de config.js
+      "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
+    );
+    window.supabaseClient = supabaseClient;
+
+    async function cerrarSesionDetalle() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "index.html";
+    }
+  </script>
+  <script src="./detalle.js"></script>
+</body>
+</html>

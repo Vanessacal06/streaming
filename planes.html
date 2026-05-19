@@ -1,50 +1,109 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="es" data-tema="oscuro">
 <head>
-
-  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VELORA | Planes</title>
-
-  <link rel="stylesheet" href="planes.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-  <script type="module" src="./planes.js"></script>
-
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./planes.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.js"></script>
+  <script src="./efectos.js"></script>
 </head>
-
 <body>
+
+  <!-- BARRA UTILIDADES -->
+  <div class="util-bar">
+    <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
+    <button class="util-btn" onclick="toggleIdioma()">
+      <span id="txt-idioma-btn">EN</span>
+    </button>
+    <button class="util-btn" onclick="abrirPerfil()">👤 <span id="txt-perfil">Mi Perfil</span></button>
+    <button class="util-btn btn-logout" onclick="cerrarSesion()">🚪 Salir</button>
+  </div>
 
   <!-- HERO -->
   <header class="hero">
-
-    <h1>ELIGE TU EXPERIENCIA</h1>
-
-    <p>
-      Streaming ilimitado con calidad premium,
-      historias épicas y una experiencia futurista.
-    </p>
-
+    <h1 id="txt-elegir">ELIGE TU EXPERIENCIA</h1>
+    <p>Streaming ilimitado con calidad premium, historias épicas y una experiencia futurista.</p>
   </header>
 
-  <!-- CONTENEDOR GENERAL -->
+  <!-- PLANES -->
   <section class="planes-wrapper">
-
-    <main class="planes-title">
-      PLANES DISPONIBLES
-    </main>
-
-    <!-- TARJETAS -->
+    <p class="planes-title">PLANES DISPONIBLES</p>
     <article class="planes-container" id="planes">
-      <!-- Supabase carga aquí -->
+      <!-- Cargados por planes.js -->
     </article>
-
   </section>
 
-</body>
+  <!-- ── MODAL CARRITO ── -->
+  <div class="modal-overlay oculto" id="modal-carrito">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarCarrito()">✕</button>
+      <h3>🛒 <span id="txt-carrito-titulo">Carrito de compra</span></h3>
 
+      <div class="carrito-item">
+        <div>
+          <div class="carrito-item-nombre" id="carrito-plan-nombre">—</div>
+          <div style="font-size:12px; color:var(--text3)">Suscripción mensual</div>
+        </div>
+        <div class="carrito-item-precio" id="carrito-plan-precio">—</div>
+      </div>
+
+      <p style="margin: 20px 0 14px; font-size:13px; color:var(--text2); font-weight:600; letter-spacing:1px;">
+        DATOS DE PAGO (simulado)
+      </p>
+
+      <input type="text" id="pago-nombre" placeholder="Nombre en la tarjeta" maxlength="40">
+
+      <input type="text" id="pago-numero" placeholder="1234 5678 9012 3456"
+             maxlength="19" oninput="formatearNumeroTarjeta(this)">
+
+      <div class="carrito-row">
+        <input type="text" id="pago-exp" placeholder="MM/AA"
+               maxlength="5" oninput="formatearExpiracion(this)">
+        <input type="text" id="pago-cvv" placeholder="CVV" maxlength="4">
+      </div>
+
+      <button onclick="procesarPago()" style="margin-top:10px" id="txt-btn-pagar">
+        💳 PAGAR AHORA
+      </button>
+    </div>
+  </div>
+
+  <!-- ── MODAL PERFIL ── -->
+  <div class="modal-overlay oculto" id="modal-perfil">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarPerfil()">✕</button>
+      <h3>👤 Mi Perfil</h3>
+      <div id="perfil-contenido">
+        <p style="color:var(--text2)">Cargando...</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./planes.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const txt = window.t();
+      const idiomaBtn = document.getElementById("txt-idioma-btn");
+      if (idiomaBtn) idiomaBtn.textContent = window.VELORA_IDIOMA === "es" ? "EN" : "ES";
+
+      const elegir = document.getElementById("txt-elegir");
+      if (elegir) elegir.textContent = txt.elegirPlan || "ELIGE TU EXPERIENCIA";
+
+      const perfilBtn = document.getElementById("txt-perfil");
+      if (perfilBtn) perfilBtn.textContent = txt.perfil || "Mi Perfil";
+    });
+
+    async function cerrarSesion() {
+      const sb = window.supabase.createClient(
+  "https://ytdkmyotjzaissxfjjuu.supabase.co",
+  "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
+);
+      await sb.auth.signOut();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
 </html>

@@ -1,51 +1,57 @@
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="es" data-tema="oscuro">
 <head>
   <meta charset="UTF-8">
-  <title>Catálogo de Películas | VELORA</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo | VELORA</title>
   <link rel="stylesheet" href="./index.css">
   <link rel="stylesheet" href="./peliculas.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
-
-  <script type="module" src="./planes.js"></script>
-  <script type="module" src="./calificaciones.js"></script>
+  <script src="./efectos.js"></script>
+  <script src="./externalApi.js"></script>
+  <script src="./calificaciones.js" defer></script>
   <script src="./peliculas.js" defer></script>
 </head>
-
 <body>
 
+  <!-- VIDEO FONDO -->
   <video autoplay muted loop id="video-fondo">
     <source src="./video.mp4" type="video/mp4">
-    Tu navegador no soporta videos.
   </video>
 
+  <!-- NAVBAR -->
   <header class="navbar">
     <section class="logo-container">
       <img src="./logo streaming.jpeg" alt="Logo" class="logo">
-      <h1>VELORA STREAMING</h1>
+      <h1>VELORA</h1>
     </section>
+
+    <!-- WIDGET CLIMA (Tarea Jira) -->
+    <div id="weather-widget" title="Clima actual">
+      <img id="weather-icon" src="" alt="clima">
+      <span id="weather-temp">...</span>
+      <span id="weather-city">Cargando...</span>
+    </div>
+
+    <!-- CONTROLES NAVBAR -->
+    <div class="navbar-controls">
+      <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
+      <button class="util-btn" onclick="toggleIdioma()">
+        <span id="txt-idioma-btn">EN</span>
+      </button>
+      <button class="util-btn" onclick="abrirPerfil()">👤</button>
+      <button class="util-btn btn-logout" onclick="cerrarSesion()">🚪</button>
+    </div>
   </header>
 
+  <!-- BÚSQUEDA Y FILTROS -->
   <main class="main-controls">
-    
     <section class="search-filter-group">
-      
       <section class="buscador-box">
-        <input 
-          type="text" 
-          id="buscador" 
-          placeholder="Buscar películas o series..."
-        >
-        <button onclick="buscarPeliculas()">
-          BUSCAR
-        </button>
+        <input type="text" id="buscador" placeholder="Buscar películas o series...">
+        <button onclick="buscarPeliculas()">BUSCAR</button>
       </section>
-
       <section class="filtro-box">
         <select id="filtroGenero" onchange="filtrarGeneroSelect()">
           <option value="Todos">Todas las categorías</option>
@@ -55,23 +61,79 @@
           <option value="Terror">Terror</option>
           <option value="Romance">Romance</option>
           <option value="Ciencia ficción">Ciencia ficción</option>
+          <option value="Animación">Animación</option>
+          <option value="Aventura">Aventura</option>
         </select>
       </section>
-
     </section>
-
   </main>
 
-  <section id="slider-estrenos">
-    </section>
+  <!-- SLIDER ESTRENOS -->
+  <section id="slider-estrenos"></section>
 
-  <section class="contenedor" id="peliculas">
-    </section>
+  <!-- GRID PELÍCULAS -->
+  <section class="contenedor" id="peliculas"></section>
 
   <footer>
-    <p>© 2026 VELORA - Experiencia Futurista</p>
+    <p>© 2026 VELORA — Experiencia Futurista</p>
   </footer>
 
-</body>
+  <!-- MODAL PERFIL -->
+  <div class="modal-overlay oculto" id="modal-perfil">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarPerfil()">✕</button>
+      <h3>👤 Mi Perfil</h3>
+      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
+    </div>
+  </div>
 
+  <script>
+    // Supabase global para calificaciones y perfil
+    const supabaseClient = window.supabase.createClient(
+      "https://ytdkmyotjzaissxfjjuu.supabase.co",
+      "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
+    );
+    window.supabaseClient = supabaseClient;
+
+    // Cerrar sesión
+    async function cerrarSesion() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    // Cargar perfil en modal
+    async function cargarDatosPerfil() {
+      const txt = window.t();
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) return;
+      const { data: perfil } = await supabaseClient
+        .from("perfiles").select("*").eq("id", user.id).maybeSingle();
+
+      const c = document.getElementById("perfil-contenido");
+      if (!perfil) { c.innerHTML = "<p>No hay datos.</p>"; return; }
+
+      const tarjeta = perfil.tarjeta_ultimos4
+        ? `•••• •••• •••• ${perfil.tarjeta_ultimos4}`
+        : (txt.sinTarjeta || "Sin tarjeta");
+
+      c.innerHTML = `
+        <div class="perfil-dato"><span>Nombre</span><span>${perfil.nombre || "—"}</span></div>
+        <div class="perfil-dato"><span>Email</span><span>${perfil.email || user.email}</span></div>
+        <div class="perfil-dato"><span>${txt.planActivo || "Plan"}</span><span>${perfil.tipo_suscripcion || "—"}</span></div>
+        <div class="perfil-dato"><span>${txt.tarjetaGuardada || "Tarjeta"}</span><span>${tarjeta}</span></div>
+        ${perfil.id_suscripcion ? `<div class="badge-plan">${perfil.tipo_suscripcion}</div>` : ""}
+      `;
+    }
+    window.cargarDatosPerfil = cargarDatosPerfil;
+
+    // Aplicar idioma
+    document.addEventListener("DOMContentLoaded", () => {
+      const idiomaBtn = document.getElementById("txt-idioma-btn");
+      if (idiomaBtn) idiomaBtn.textContent = window.VELORA_IDIOMA === "es" ? "EN" : "ES";
+      // Cargar clima después de que la página esté lista
+      setTimeout(() => window.cargarClima?.(), 500);
+    });
+  </script>
+
+</body>
 </html>

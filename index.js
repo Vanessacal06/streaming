@@ -1,37 +1,87 @@
-// Conexión a Supabase
+// index.js - Autenticación VELORA
+
 const supabaseClient = window.supabase.createClient(
-  "https://wokruyihvhbkcgvlhsnk.supabase.co",
-  "sb_publishable_-3hDnV-A6JPf8ySp4NC98w_CEodELwN"
+  "https://ytdkmyotjzaissxfjjuu.supabase.co",
+  "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
 );
 
-// 🔍 Verificar si el correo existe en la tabla perfiles
-async function verificarCorreoExiste(email) {
-  const { data, error } = await supabaseClient
+// ── VERIFICAR SESIÓN ACTIVA AL CARGAR ─────────────────────────
+// Si ya está logueado, redirigir según tenga plan o no
+window.addEventListener("DOMContentLoaded", async () => {
+  const { data: { user } } = await supabaseClient.auth.getUser();
+  if (!user) return; // No está logueado, mostrar formularios
+
+  // Verificar si tiene plan activo
+  const { data: perfil } = await supabaseClient
     .from("perfiles")
-    .select("email")
-    .eq("email", email)
+    .select("tipo_suscripcion, id_suscripcion")
+    .eq("id", user.id)
     .maybeSingle();
 
-  if (error) {
-    console.error("Error verificando correo:", error.message);
-    return false;
+  if (perfil?.id_suscripcion) {
+    // Ya tiene plan → ir directamente a películas
+    window.location.href = "peliculas.html";
+  } else {
+    // Tiene cuenta pero sin plan → ir a planes
+    window.location.href = "planes.html";
+  }
+});
+
+// ── LOGIN ──────────────────────────────────────────────────────
+async function login() {
+  const email = document.getElementById("emailLogin").value.trim();
+  const password = document.getElementById("passwordLogin").value;
+
+  if (!email || !password) {
+    alert("Por favor completa todos los campos.");
+    return;
   }
 
-  return data !== null;
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    alert("Error al iniciar sesión: " + error.message);
+    return;
+  }
+
+  const user = data.user;
+  const nombre = user.user_metadata?.nombre || "";
+  const edad = user.user_metadata?.edad || null;
+
+  // Crear perfil si no existe (primera vez)
+  const { data: perfilExistente } = await supabaseClient
+    .from("perfiles")
+    .select("id, id_suscripcion")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!perfilExistente) {
+    await supabaseClient.from("perfiles").insert([{
+      id: user.id,
+      email: user.email,
+      nombre: nombre,
+      edad: edad,
+      tipo_suscripcion: "Pendiente"
+    }]);
+  }
+
+  // Redirigir según plan
+  if (perfilExistente?.id_suscripcion) {
+    window.location.href = "peliculas.html";
+  } else {
+    window.location.href = "planes.html";
+  }
 }
 
-// Registro de usuario
+// ── REGISTRO ───────────────────────────────────────────────────
 async function registrar() {
-  const email = document.getElementById("email").value;
+  const email    = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  const nombre = document.getElementById("nombre").value;
-  const edad = document.getElementById("edad").value;
+  const nombre   = document.getElementById("nombre").value.trim();
+  const edad     = document.getElementById("edad").value;
 
-  // 🔥 Validar si el correo ya existe
-  const existe = await verificarCorreoExiste(email);
-
-  if (existe) {
-    alert("Este correo ya está registrado");
+  if (!email || !password || !nombre) {
+    alert("Por favor completa los campos obligatorios.");
     return;
   }
 
@@ -39,80 +89,25 @@ async function registrar() {
     email,
     password,
     options: {
-      emailRedirectTo: "https://vanessacal06.github.io/streaming/planes.html",
-      data: {
-        nombre: nombre,
-        edad: edad
-      }
+      // ← Cambia esto por tu URL local o deja vacío
+      emailRedirectTo: "http://127.0.0.1:5501/planes.html",
+      data: { nombre, edad }
     }
   });
 
   if (error) {
     alert("Error en registro: " + error.message);
   } else {
-    alert("Registro exitoso, revisa tu correo para confirmar.");
+    alert("¡Registro exitoso! Revisa tu correo para confirmar tu cuenta.");
+    mostrarLogin();
   }
 }
 
-// Login de usuario
-async function login() {
-  const email = document.getElementById("emailLogin").value;
-  const password = document.getElementById("passwordLogin").value;
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    alert("Error en login: " + error.message);
-  } else {
-    const user = data.user;
-
-    const nombre = user.user_metadata?.nombre || "";
-    const edad = user.user_metadata?.edad || null;
-
-    // Verificar si ya existe un perfil
-    const { data: perfilExistente, error: perfilError } = await supabaseClient
-      .from("perfiles")
-      .select("*")
-      .eq("identificacion", user.id)
-      .single();
-
-    if (perfilError && perfilError.code !== "PGRST116") {
-      console.error("Error al consultar perfil:", perfilError.message);
-    }
-
-    if (!perfilExistente) {
-      const { error: insertError } = await supabaseClient
-        .from("perfiles")
-        .insert([
-          {
-            identificacion: user.id,
-            email: user.email, // 🔥 GUARDAR EMAIL (IMPORTANTE)
-            nombre: nombre,
-            edad: edad,
-            tipo_suscripcion: "Pendiente",
-            fecha_registro: new Date()
-          }
-        ]);
-
-      if (insertError) {
-        console.error("Error al crear perfil:", insertError.message);
-        alert("Hubo un error al crear tu perfil: " + insertError.message);
-        return;
-      }
-    }
-
-    window.location.href = "planes.html";
-  }
-}
-
+// ── RECUPERAR CONTRASEÑA ───────────────────────────────────────
 async function recuperarPassword() {
-  const email = document.getElementById("emailRecuperar").value;
-
+  const email = document.getElementById("emailRecuperar").value.trim();
   if (!email) {
-    alert("Por favor ingresa tu correo");
+    alert("Por favor ingresa tu correo.");
     return;
   }
 
@@ -123,13 +118,12 @@ async function recuperarPassword() {
   if (error) {
     alert("Error: " + error.message);
   } else {
-    alert("Si el correo está registrado, recibirás un enlace de recuperación");
+    alert("Si el correo está registrado, recibirás un enlace de recuperación.");
   }
 }
 
-// Exportar funciones
-window.registrar = registrar;
-window.login = login;
+// ── EXPORTAR ───────────────────────────────────────────────────
+window.registrar        = registrar;
+window.login            = login;
 window.recuperarPassword = recuperarPassword;
-
-
+window.supabaseClient   = supabaseClient; // disponible globalmente
