@@ -9,11 +9,23 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
   <script src="./efectos.js"></script>
+  <script src="./externalApi.js"></script>
 </head>
 <body>
 
   <!-- BARRA UTILIDADES -->
   <div class="util-bar">
+    <select id="selector-region" class="util-btn selector-region" onchange="cambiarRegion(this.value)">
+      <option value="CO">🇨🇴 COP</option>
+      <option value="US">🇺🇸 USD</option>
+      <option value="MX">🇲🇽 MXN</option>
+      <option value="AR">🇦🇷 ARS</option>
+      <option value="CL">🇨🇱 CLP</option>
+      <option value="ES">🇪🇺 EUR</option>
+      <option value="PE">🇵🇪 PEN</option>
+      <option value="BR">🇧🇷 BRL</option>
+    </select>
+    <span id="region-indicator" class="util-btn region-badge">📍 ...</span>
     <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
     <button class="util-btn" onclick="toggleIdioma()">
       <span id="txt-idioma-btn">EN</span>
@@ -31,17 +43,14 @@
   <!-- PLANES -->
   <section class="planes-wrapper">
     <p class="planes-title">PLANES DISPONIBLES</p>
-    <article class="planes-container" id="planes">
-      <!-- Cargados por planes.js -->
-    </article>
+    <article class="planes-container" id="planes"></article>
   </section>
 
-  <!-- ── MODAL CARRITO ── -->
+  <!-- MODAL CARRITO -->
   <div class="modal-overlay oculto" id="modal-carrito">
     <div class="modal-box">
       <button class="modal-close" onclick="cerrarCarrito()">✕</button>
-      <h3>🛒 <span id="txt-carrito-titulo">Carrito de compra</span></h3>
-
+      <h3>🛒 <span>Carrito de compra</span></h3>
       <div class="carrito-item">
         <div>
           <div class="carrito-item-nombre" id="carrito-plan-nombre">—</div>
@@ -49,36 +58,27 @@
         </div>
         <div class="carrito-item-precio" id="carrito-plan-precio">—</div>
       </div>
-
       <p style="margin: 20px 0 14px; font-size:13px; color:var(--text2); font-weight:600; letter-spacing:1px;">
         DATOS DE PAGO (simulado)
       </p>
-
       <input type="text" id="pago-nombre" placeholder="Nombre en la tarjeta" maxlength="40">
-
       <input type="text" id="pago-numero" placeholder="1234 5678 9012 3456"
              maxlength="19" oninput="formatearNumeroTarjeta(this)">
-
       <div class="carrito-row">
         <input type="text" id="pago-exp" placeholder="MM/AA"
                maxlength="5" oninput="formatearExpiracion(this)">
         <input type="text" id="pago-cvv" placeholder="CVV" maxlength="4">
       </div>
-
-      <button onclick="procesarPago()" style="margin-top:10px" id="txt-btn-pagar">
-        💳 PAGAR AHORA
-      </button>
+      <button onclick="procesarPago()" style="margin-top:10px">💳 PAGAR AHORA</button>
     </div>
   </div>
 
-  <!-- ── MODAL PERFIL ── -->
+  <!-- MODAL PERFIL -->
   <div class="modal-overlay oculto" id="modal-perfil">
     <div class="modal-box">
       <button class="modal-close" onclick="cerrarPerfil()">✕</button>
       <h3>👤 Mi Perfil</h3>
-      <div id="perfil-contenido">
-        <p style="color:var(--text2)">Cargando...</p>
-      </div>
+      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
     </div>
   </div>
 
@@ -94,13 +94,24 @@
 
       const perfilBtn = document.getElementById("txt-perfil");
       if (perfilBtn) perfilBtn.textContent = txt.perfil || "Mi Perfil";
+
+      // Poner el selector en la región guardada
+      const selector = document.getElementById("selector-region");
+      const regionGuardada = localStorage.getItem("velora_region") || "CO";
+      if (selector) selector.value = regionGuardada;
+      
+      // Inicializar indicador visual
+      if (typeof actualizarIndicadorUbicacion === 'function') actualizarIndicadorUbicacion();
+      
+      // Intentar detectar ubicación automáticamente
+      setTimeout(() => window.cargarClima?.(), 300);
     });
 
     async function cerrarSesion() {
-      const sb = window.supabase.createClient(
-  "https://ytdkmyotjzaissxfjjuu.supabase.co",
-  "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
-);
+      const sb = window.supabaseClient || window.supabase.createClient(
+        "https://ytdkmyotjzaissxfjjuu.supabase.co",
+        "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
+      );
       await sb.auth.signOut();
       window.location.href = "index.html";
     }

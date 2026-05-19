@@ -1,5 +1,41 @@
 // efectos.js - Utilidades de UI para VELORA
 
+// ── MAPA DE MONEDAS GLOBAL ────────────────────────────────────
+const MONEDAS_GLOBAL = {
+  CO: { nombre: "COP", locale: "es-CO", tasa: 1 },
+  US: { nombre: "USD", locale: "en-US", tasa: 0.00025 },
+  MX: { nombre: "MXN", locale: "es-MX", tasa: 0.0045 },
+  AR: { nombre: "ARS", locale: "es-AR", tasa: 250 },
+  CL: { nombre: "CLP", locale: "es-CL", tasa: 0.19 },
+  ES: { nombre: "EUR", locale: "es-ES", tasa: 0.00023 },
+  PE: { nombre: "PEN", locale: "es-PE", tasa: 0.00095 },
+  EC: { nombre: "USD", locale: "en-US", tasa: 0.00025 },
+  BR: { nombre: "BRL", locale: "pt-BR", tasa: 0.0013 }
+};
+
+// ── OBTENER REGIÓN ACTUAL ────────────────────────────────────
+function obtenerRegion() {
+  return window.VELORA_REGION || localStorage.getItem("velora_region") || "CO";
+}
+
+// ── CAMBIAR REGIÓN MANUALMENTE ────────────────────────────────
+function cambiarRegion(nuevaRegion) {
+  window.VELORA_REGION = nuevaRegion;
+  localStorage.setItem("velora_region", nuevaRegion);
+  
+  // Actualizar indicador visual
+  actualizarIndicadorUbicacion();
+  
+  // Actualizar selector si existe
+  const selector = document.getElementById("selector-region");
+  if (selector) selector.value = nuevaRegion;
+  
+  // Disparar evento para que planes y películas se actualicen
+  window.dispatchEvent(new CustomEvent('regionCambiada', { detail: { region: nuevaRegion } }));
+  
+  console.log("Región cambiada a:", nuevaRegion, "→ Moneda:", (MONEDAS_GLOBAL[nuevaRegion] || MONEDAS_GLOBAL["CO"]).nombre);
+}
+
 // ── TEMA CLARO / OSCURO ──────────────────────────────────────
 function initTema() {
   const guardado = localStorage.getItem("velora_tema") || "oscuro";
@@ -15,7 +51,6 @@ function toggleTema() {
 function aplicarTema(tema) {
   localStorage.setItem("velora_tema", tema);
   document.documentElement.setAttribute("data-tema", tema);
-  // Actualizar botón si existe
   const btn = document.getElementById("btn-tema");
   if (btn) {
     const txt = window.t ? window.t() : null;
@@ -31,10 +66,10 @@ function toggleIdioma() {
   const nuevo = actual === "es" ? "en" : "es";
   window.VELORA_IDIOMA = nuevo;
   localStorage.setItem("velora_idioma", nuevo);
-  location.reload(); // Recarga para aplicar el idioma
+  location.reload();
 }
 
-// ── MOSTRAR / OCULTAR FORMULARIOS (index.html) ───────────────
+// ── FORMULARIOS ──────────────────────────────────────────────
 function mostrarLogin() {
   document.getElementById("login")?.classList.remove("oculto");
   document.getElementById("registro")?.classList.add("oculto");
@@ -71,8 +106,15 @@ function abrirCarrito(planId, planNombre, planPrecio) {
   const modal = document.getElementById("modal-carrito");
   if (modal) {
     document.getElementById("carrito-plan-nombre").textContent = planNombre;
-    document.getElementById("carrito-plan-precio").textContent =
-      `COP ${Number(planPrecio).toLocaleString("es-CO")}`;
+    
+    const region = obtenerRegion();
+    const moneda = MONEDAS_GLOBAL[region] || MONEDAS_GLOBAL["CO"];
+    const precioFormateado = new Intl.NumberFormat(moneda.locale, {
+      style: 'currency', currency: moneda.nombre,
+      minimumFractionDigits: 0, maximumFractionDigits: 0
+    }).format(Number(planPrecio));
+    
+    document.getElementById("carrito-plan-precio").textContent = precioFormateado;
     modal.dataset.planId = planId;
     modal.dataset.planNombre = planNombre;
     modal.dataset.planPrecio = planPrecio;
@@ -96,6 +138,18 @@ function formatearExpiracion(input) {
   input.value = val;
 }
 
+// ── INDICADOR VISUAL DE UBICACIÓN ────────────────────────────
+function actualizarIndicadorUbicacion() {
+  const region = obtenerRegion();
+  const el = document.getElementById("region-indicator");
+  if (el) {
+    const codePoints = region.toUpperCase().split('').map(char => 127397 + char.charCodeAt());
+    const flag = String.fromCodePoint(...codePoints);
+    el.textContent = `${flag} ${region}`;
+    el.title = `Región: ${region}`;
+  }
+}
+
 // ── EXPORTAR ─────────────────────────────────────────────────
 window.initTema = initTema;
 window.toggleTema = toggleTema;
@@ -109,6 +163,9 @@ window.abrirCarrito = abrirCarrito;
 window.cerrarCarrito = cerrarCarrito;
 window.formatearNumeroTarjeta = formatearNumeroTarjeta;
 window.formatearExpiracion = formatearExpiracion;
+window.actualizarIndicadorUbicacion = actualizarIndicadorUbicacion;
+window.cambiarRegion = cambiarRegion;
+window.obtenerRegion = obtenerRegion;
+window.MONEDAS_GLOBAL = MONEDAS_GLOBAL;
 
-// Iniciar tema al cargar
 document.addEventListener("DOMContentLoaded", initTema);

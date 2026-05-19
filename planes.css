@@ -201,3 +201,12 @@ body::after {
 /* ── BOTÓN LOGOUT / UTIL ── */
 .btn-logout { color: #ff6b6b !important; }
 .btn-logout:hover { color: #ff4444 !important; border-color: #ff4444 !important; }
+
+
+
+.region-badge {
+  cursor: default;
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none; /* No es clickeable, es solo visual */
+}

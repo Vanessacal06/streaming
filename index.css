@@ -341,3 +341,91 @@ button:hover {
   .util-bar { gap: 5px; padding: 8px; }
   .util-btn { padding: 5px 10px; font-size: 11px; }
 }
+
+.region-badge {
+  cursor: default;
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.boton-calificar {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--magenta), var(--purple));
+  color: #fff;
+  padding: 9px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.boton-calificar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255,43,214,0.35);
+}
+
+
+/* ── SELECTOR REGIÓN ── */
+.selector-region {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+  font-family: inherit;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 10px;
+}
+
+.selector-region:hover,
+.selector-region:focus {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+.selector-region option {
+  background: #1a1625;
+  color: #fff;
+  padding: 8px;
+}
+
+[data-tema="claro"] .selector-region option {
+  background: #f0f2f8;
+  color: #0d0a1a;
+}
+
+.region-badge {
+  cursor: default;
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.boton-calificar {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--magenta), var(--purple));
+  color: #fff;
+  padding: 9px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  transition: 0.3s;
+}
+
+.boton-calificar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255,43,214,0.35);
+}

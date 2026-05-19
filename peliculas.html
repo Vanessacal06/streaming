@@ -15,27 +15,34 @@
 </head>
 <body>
 
-  <!-- VIDEO FONDO -->
   <video autoplay muted loop id="video-fondo">
     <source src="./video.mp4" type="video/mp4">
   </video>
 
-  <!-- NAVBAR -->
-  <header class="navbar">
+    <header class="navbar">
     <section class="logo-container">
       <img src="./logo streaming.jpeg" alt="Logo" class="logo">
       <h1>VELORA</h1>
     </section>
 
-    <!-- WIDGET CLIMA (Tarea Jira) -->
     <div id="weather-widget" title="Clima actual">
       <img id="weather-icon" src="" alt="clima">
       <span id="weather-temp">...</span>
       <span id="weather-city">Cargando...</span>
     </div>
 
-    <!-- CONTROLES NAVBAR -->
     <div class="navbar-controls">
+      <select id="selector-region" class="util-btn selector-region" onchange="cambiarRegion(this.value)">
+        <option value="CO">🇨🇴 COP</option>
+        <option value="US">🇺🇸 USD</option>
+        <option value="MX">🇲🇽 MXN</option>
+        <option value="AR">🇦🇷 ARS</option>
+        <option value="CL">🇨🇱 CLP</option>
+        <option value="ES">🇪🇺 EUR</option>
+        <option value="PE">🇵🇪 PEN</option>
+        <option value="BR">🇧🇷 BRL</option>
+      </select>
+      <span id="region-indicator" class="util-btn region-badge">📍 ...</span>
       <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
       <button class="util-btn" onclick="toggleIdioma()">
         <span id="txt-idioma-btn">EN</span>
@@ -45,7 +52,6 @@
     </div>
   </header>
 
-  <!-- BÚSQUEDA Y FILTROS -->
   <main class="main-controls">
     <section class="search-filter-group">
       <section class="buscador-box">
@@ -68,17 +74,13 @@
     </section>
   </main>
 
-  <!-- SLIDER ESTRENOS -->
   <section id="slider-estrenos"></section>
-
-  <!-- GRID PELÍCULAS -->
   <section class="contenedor" id="peliculas"></section>
 
   <footer>
     <p>© 2026 VELORA — Experiencia Futurista</p>
   </footer>
 
-  <!-- MODAL PERFIL -->
   <div class="modal-overlay oculto" id="modal-perfil">
     <div class="modal-box">
       <button class="modal-close" onclick="cerrarPerfil()">✕</button>
@@ -88,20 +90,17 @@
   </div>
 
   <script>
-    // Supabase global para calificaciones y perfil
     const supabaseClient = window.supabase.createClient(
       "https://ytdkmyotjzaissxfjjuu.supabase.co",
       "sb_publishable_6_4LFbvOzGUfsnGyhgQvjQ_2JCVJxlH"
     );
     window.supabaseClient = supabaseClient;
 
-    // Cerrar sesión
     async function cerrarSesion() {
       await supabaseClient.auth.signOut();
       window.location.href = "index.html";
     }
 
-    // Cargar perfil en modal
     async function cargarDatosPerfil() {
       const txt = window.t();
       const { data: { user } } = await supabaseClient.auth.getUser();
@@ -126,12 +125,17 @@
     }
     window.cargarDatosPerfil = cargarDatosPerfil;
 
-    // Aplicar idioma
-    document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
       const idiomaBtn = document.getElementById("txt-idioma-btn");
       if (idiomaBtn) idiomaBtn.textContent = window.VELORA_IDIOMA === "es" ? "EN" : "ES";
-      // Cargar clima después de que la página esté lista
-      setTimeout(() => window.cargarClima?.(), 500);
+      
+      // Poner selector en la región guardada
+      const selector = document.getElementById("selector-region");
+      const regionGuardada = localStorage.getItem("velora_region") || "CO";
+      if (selector) selector.value = regionGuardada;
+      
+      if (typeof actualizarIndicadorUbicacion === 'function') actualizarIndicadorUbicacion();
+      setTimeout(() => window.cargarClima?.(), 300);
     });
   </script>
 

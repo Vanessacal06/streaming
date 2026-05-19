@@ -23,6 +23,13 @@ async function cargarPlanes() {
   contenedor.innerHTML = "";
 
   const txt = window.t();
+  const MONEDAS = window.MONEDAS_GLOBAL;
+  
+  // Obtener región actual
+  const region = window.obtenerRegion ? window.obtenerRegion() : (window.VELORA_REGION || localStorage.getItem("velora_region") || "CO");
+  const moneda = MONEDAS[region] || MONEDAS["CO"];
+
+  console.log("Cargando planes — Región:", region, "Moneda:", moneda.nombre);
 
   planes.forEach(plan => {
     const card = document.createElement("section");
@@ -41,16 +48,22 @@ async function cargarPlanes() {
       features = `<li>4 pantallas</li><li>Ultra HD 4K</li><li>Todo el catálogo</li><li>Sin anuncios</li><li>Multidispositivo</li><li>Contenido exclusivo</li>`;
     }
 
+    const precioLocal = Math.round(Number(plan.precio) * moneda.tasa);
+    const soloNumero = new Intl.NumberFormat(moneda.locale, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(precioLocal);
+
     card.innerHTML = `
       ${isPremium ? '<span class="badge">TOP</span>' : ''}
       <h3>${plan.nombre}</h3>
       <div class="price">
-        <span class="currency">COP</span>
-        <span class="number">${Number(plan.precio).toLocaleString("es-CO")}</span>
+        <span class="currency">${moneda.nombre}</span>
+        <span class="number">${soloNumero}</span>
         <span class="month">/mes</span>
       </div>
       <ul class="features">${features}</ul>
-      <button class="btn-plan" onclick="seleccionarPlan(${plan.id}, '${plan.nombre}', ${plan.precio})">
+      <button class="btn-plan" onclick="seleccionarPlan(${plan.id}, '${plan.nombre}', ${precioLocal})">
         ${txt.activarPlan || "🚀 ACTIVAR PLAN"}
       </button>
     `;
@@ -58,7 +71,7 @@ async function cargarPlanes() {
   });
 }
 
-// ── SELECCIONAR PLAN → abrir carrito ─────────────────────────
+// ── SELECCIONAR PLAN ─────────────────────────────────────────
 async function seleccionarPlan(idPlan, nombrePlan, precio) {
   const { data: { user }, error } = await supabaseClient.auth.getUser();
   if (error || !user) {
@@ -66,11 +79,10 @@ async function seleccionarPlan(idPlan, nombrePlan, precio) {
     window.location.href = "index.html";
     return;
   }
-  // Abrir modal carrito
   window.abrirCarrito(idPlan, nombrePlan, precio);
 }
 
-// ── PROCESAR PAGO SIMULADO ────────────────────────────────────
+// ── PROCESAR PAGO ─────────────────────────────────────────────
 async function procesarPago() {
   const txt = window.t();
   const nombre  = document.getElementById("pago-nombre").value.trim();
@@ -78,7 +90,6 @@ async function procesarPago() {
   const exp     = document.getElementById("pago-exp").value.trim();
   const cvv     = document.getElementById("pago-cvv").value.trim();
 
-  // Validación básica
   if (!nombre || numero.length < 12 || exp.length < 4 || cvv.length < 3) {
     alert(txt.camposRequeridos || "Por favor completa todos los campos de pago.");
     return;
@@ -91,7 +102,6 @@ async function procesarPago() {
   const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) { alert("Sesión expirada."); return; }
 
-  // Guardar los últimos 4 dígitos de la tarjeta en el perfil
   const ultimos4 = numero.slice(-4);
 
   const { error } = await supabaseClient
@@ -121,10 +131,7 @@ async function cargarDatosPerfil() {
   if (!user) return;
 
   const { data: perfil } = await supabaseClient
-    .from("perfiles")
-    .select("*")
-    .eq("id", user.id)
-    .maybeSingle();
+    .from("perfiles").select("*").eq("id", user.id).maybeSingle();
 
   const contenido = document.getElementById("perfil-contenido");
   if (!contenido) return;
@@ -140,22 +147,10 @@ async function cargarDatosPerfil() {
     : txt.sinTarjeta;
 
   contenido.innerHTML = `
-    <div class="perfil-dato">
-      <span>${txt.nombre || "Nombre"}</span>
-      <span>${perfil.nombre || "—"}</span>
-    </div>
-    <div class="perfil-dato">
-      <span>Email</span>
-      <span>${perfil.email || user.email}</span>
-    </div>
-    <div class="perfil-dato">
-      <span>${txt.planActivo || "Plan activo"}</span>
-      <span>${plan}</span>
-    </div>
-    <div class="perfil-dato">
-      <span>${txt.tarjetaGuardada || "Tarjeta guardada"}</span>
-      <span>${tarjeta}</span>
-    </div>
+    <div class="perfil-dato"><span>${txt.nombre || "Nombre"}</span><span>${perfil.nombre || "—"}</span></div>
+    <div class="perfil-dato"><span>Email</span><span>${perfil.email || user.email}</span></div>
+    <div class="perfil-dato"><span>${txt.planActivo || "Plan activo"}</span><span>${plan}</span></div>
+    <div class="perfil-dato"><span>${txt.tarjetaGuardada || "Tarjeta guardada"}</span><span>${tarjeta}</span></div>
     ${perfil.id_suscripcion ? `<div class="badge-plan">${plan}</div>` : ""}
   `;
 }
@@ -166,3 +161,16 @@ window.seleccionarPlan = seleccionarPlan;
 window.procesarPago = procesarPago;
 
 document.addEventListener("DOMContentLoaded", cargarPlanes);
+
+// ← Recargar planes cuando cambie la región
+window.addEventListener('regionCambiada', () => {
+  console.log("Región cambiada — recargando planes...");
+  cargarPlanes();
+});
+
+// ← También cuando se detecte automáticamente
+window.addEventListener('regionDetectada', () => {
+  const selector = document.getElementById("selector-region");
+  if (selector) selector.value = window.VELORA_REGION;
+  cargarPlanes();
+});

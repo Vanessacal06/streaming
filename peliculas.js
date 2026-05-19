@@ -1,55 +1,7 @@
 // peliculas.js - VELORA Catálogo
 
-// supabaseClient se define en el inline script de peliculas.html
-// API_KEY viene de config.js
-
 let generoActivo = "Todos";
 const tmdbIdsRenderizados = [];
-
-
-
-// ── SINCRONIZAR DATOS CON SUPABASE ────────────────────────────
-async function sincronizarConSupabase(peliculasTMDB) {
-  if (!peliculasTMDB || peliculasTMDB.length === 0) return;
-
-  try {
-    // 1. Guardar Categorías (usamos el mapa que ya tienes)
-    const categoriasUpsert = Object.entries(GENEROS).map(([id, nombre]) => ({
-      id_tmdb: parseInt(id),
-      nombre: nombre
-    }));
-    await supabaseClient.from("categorias").upsert(categoriasUpsert, { onConflict: 'id_tmdb' });
-
-    // 2. Guardar Películas
-    const peliculasUpsert = peliculasTMDB.map(p => ({
-      id_tmdb: p.id,
-      titulo: p.title,
-      descripcion: p.overview,
-      poster_path: p.poster_path,
-      fecha_lanzamiento: p.release_date || null
-    }));
-    await supabaseClient.from("peliculas").upsert(peliculasUpsert, { onConflict: 'id_tmdb' });
-
-    // 3. Guardar Relación Película-Categoría
-    const relacionesUpsert = [];
-    peliculasTMDB.forEach(p => {
-      if (p.genre_ids) {
-        p.genre_ids.forEach(catId => {
-          relacionesUpsert.push({ 
-            pelicula_id_tmdb: p.id, 
-            categoria_id_tmdb: catId 
-          });
-        });
-      }
-    });
-    
-    if (relacionesUpsert.length > 0) {
-      await supabaseClient.from("pelicula_categorias").upsert(relacionesUpsert, { onConflict: ['pelicula_id_tmdb', 'categoria_id_tmdb'] });
-    }
-  } catch (err) {
-    console.error("Error sincronizando con Supabase:", err);
-  }
-}
 
 // ── MAPA GÉNEROS TMDB ─────────────────────────────────────────
 const GENEROS = {
@@ -63,6 +15,46 @@ function mostrarCategoria(pelicula) {
   if (!pelicula.genre_ids?.length) return "Sin categoría";
   const r = pelicula.genre_ids.map(id => GENEROS[id]).filter(Boolean);
   return r.length ? r.join(", ") : "Sin categoría";
+}
+
+// ── SINCRONIZAR DATOS CON SUPABASE ────────────────────────────
+async function sincronizarConSupabase(peliculasTMDB) {
+  if (!peliculasTMDB || peliculasTMDB.length === 0) return;
+
+  try {
+    const categoriasUpsert = Object.entries(GENEROS).map(([id, nombre]) => ({
+      id_tmdb: parseInt(id),
+      nombre: nombre
+    }));
+    const { error: errCat } = await supabaseClient.from("categorias").upsert(categoriasUpsert, { onConflict: 'id_tmdb' });
+    if (errCat) console.error("Error guardando categorías:", errCat.message);
+
+    const peliculasUpsert = peliculasTMDB.map(p => ({
+      id_tmdb: p.id,
+      titulo: p.title,
+      descripcion: p.overview,
+      poster_path: p.poster_path,
+      fecha_lanzamiento: p.release_date || null
+    }));
+    const { error: errPeli } = await supabaseClient.from("peliculas").upsert(peliculasUpsert, { onConflict: 'id_tmdb' });
+    if (errPeli) console.error("Error guardando películas:", errPeli.message);
+
+    const relacionesUpsert = [];
+    peliculasTMDB.forEach(p => {
+      if (p.genre_ids) {
+        p.genre_ids.forEach(catId => {
+          relacionesUpsert.push({ pelicula_id_tmdb: p.id, categoria_id_tmdb: catId });
+        });
+      }
+    });
+    
+    if (relacionesUpsert.length > 0) {
+      const { error: errRel } = await supabaseClient.from("pelicula_categorias").upsert(relacionesUpsert, { onConflict: ['pelicula_id_tmdb', 'categoria_id_tmdb'] });
+      if (errRel) console.error("Error guardando relaciones:", errRel.message);
+    }
+  } catch (err) {
+    console.error("Error general sincronizando:", err);
+  }
 }
 
 // ── SLIDER DE ESTRENOS ────────────────────────────────────────
@@ -82,7 +74,6 @@ function cargarSlider(peliculas) {
         <span style="color:#00F0FF;font-size:12px;">⭐ ${p.vote_average?.toFixed(1)}</span>
       </section>
     `;
-    slide.onclick = () => crearCard(p) && null; // clic en slider hace scroll a la peli
     slider.appendChild(slide);
   });
 }
@@ -106,8 +97,6 @@ function crearCard(pelicula) {
       <p class="descripcion">${pelicula.overview || "Sin descripción disponible."}</p>
       <span class="estrellas">⭐ ${pelicula.vote_average?.toFixed(1) || "N/A"} TMDB</span>
       <span class="estrellas" id="promedio-${pelicula.id}" style="font-size:13px;color:#00F0FF;"></span>
-      
-      <!-- Enlace a la nueva página de detalle -->
       <a href="detalle.html?id=${pelicula.id}" class="boton-trailer">
         ${txt.verTrailer || "Ver Detalle & Trailer"}
       </a>
@@ -132,7 +121,6 @@ async function cargarPeliculas() {
   tmdbIdsRenderizados.length = 0;
 
   try {
-    // Verificar sesión
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) {
       alert("Debes iniciar sesión.");
@@ -140,30 +128,29 @@ async function cargarPeliculas() {
       return;
     }
 
-    // Obtener perfil y tipo de suscripción
     const { data: perfil } = await supabaseClient
       .from("perfiles").select("tipo_suscripcion").eq("id", user.id).maybeSingle();
 
+    const region = window.VELORA_REGION || localStorage.getItem("velora_region") || "CO";
+    console.log("Cargando películas para región:", region);
+
     const resp = await fetch(
-      `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=es-ES&page=1`
+      `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}&language=es-ES&page=1&region=${region}`
     );
     const datos = await resp.json();
 
-    
+    cargarSlider(datos.results);
+    sincronizarConSupabase(datos.results);
 
     contenedor.innerHTML = "";
     for (const pelicula of datos.results) {
-      // Filtrar por género
       if (generoActivo !== "Todos") {
         if (!mostrarCategoria(pelicula).includes(generoActivo)) continue;
       }
-      // Restricción por plan básico
       if (perfil?.tipo_suscripcion?.toLowerCase().includes("básico") && pelicula.id % 2 === 0) continue;
-
       contenedor.appendChild(crearCard(pelicula));
     }
 
-    // Cargar promedios de calificaciones de usuarios
     if (window.cargarPromedios) {
       await cargarPromedios(tmdbIdsRenderizados);
     }
@@ -183,10 +170,14 @@ async function buscarPeliculas() {
   contenedor.innerHTML = "";
   tmdbIdsRenderizados.length = 0;
 
+  const region = window.VELORA_REGION || localStorage.getItem("velora_region") || "CO";
+
   const resp = await fetch(
-    `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-ES&query=${encodeURIComponent(texto)}`
+    `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=es-ES&query=${encodeURIComponent(texto)}&region=${region}`
   );
   const datos = await resp.json();
+
+  sincronizarConSupabase(datos.results);
 
   datos.results.forEach(pelicula => {
     if (generoActivo !== "Todos" && !mostrarCategoria(pelicula).includes(generoActivo)) return;
@@ -208,3 +199,16 @@ window.buscarPeliculas    = buscarPeliculas;
 window.filtrarGeneroSelect = filtrarGeneroSelect;
 
 document.addEventListener("DOMContentLoaded", cargarPeliculas);
+
+// ← Recargar cuando cambie la región manualmente
+window.addEventListener('regionCambiada', () => {
+  console.log("Región cambiada — recargando películas...");
+  cargarPeliculas();
+});
+
+// ← También cuando se detecte automáticamente
+window.addEventListener('regionDetectada', () => {
+  const selector = document.getElementById("selector-region");
+  if (selector) selector.value = window.VELORA_REGION;
+  cargarPeliculas();
+});

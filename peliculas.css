@@ -246,3 +246,12 @@ footer {
   .contenedor { width: 96%; gap: 18px; }
   #weather-widget { display: none; } /* en móvil se oculta el clima para ahorrar espacio */
 }
+
+
+
+.region-badge {
+  cursor: default;
+  font-weight: 700;
+  font-size: 14px;
+  pointer-events: none; /* No es clickeable, es solo visual */
+}
