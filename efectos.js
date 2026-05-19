@@ -150,6 +150,36 @@ function actualizarIndicadorUbicacion() {
   }
 }
 
+
+// ── APLICAR IDIOMA A TODA LA PÁGINA ──────────────────────────
+function aplicarIdioma() {
+  const txt = window.t();
+  if (!txt) return;
+
+  // 1. Traducir textos con data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (txt[key] !== undefined) el.innerHTML = txt[key];
+  });
+
+  // 2. Traducir placeholders con data-i18n-ph
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.getAttribute('data-i18n-ph');
+    if (txt[key] !== undefined) el.placeholder = txt[key];
+  });
+
+  // 3. Cambiar el atributo lang del HTML
+  document.documentElement.lang = window.VELORA_IDIOMA;
+  
+  // 4. Actualizar botón de idioma si existe
+  const idiomaBtn = document.getElementById("txt-idioma-btn");
+  if (idiomaBtn) idiomaBtn.textContent = window.VELORA_IDIOMA === "es" ? "EN" : "ES";
+}
+window.aplicarIdioma = aplicarIdioma;
+
+// Llamar la función al cargar la página
+document.addEventListener("DOMContentLoaded", aplicarIdioma);
+
 // ── EXPORTAR ─────────────────────────────────────────────────
 window.initTema = initTema;
 window.toggleTema = toggleTema;

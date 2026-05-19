@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Streaming App | VELORA</title>
+  <script src="./config.js"></script>
+  <script src="./efectos.js"></script>
   <link rel="stylesheet" href="./index.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script type="module" src="./index.js"></script>
@@ -16,19 +18,19 @@
   <section class="overlay"></section>
 
   <!-- Controles Globales (Tema e Idioma) -->
-  <div class="global-controls">
+  <nav class="global-controls" aria-label="Utilidades globales">
     <button onclick="cambiarTema()" class="btn-control" id="btn-tema">🌙</button>
     <select onchange="cambiarIdioma(this.value)" class="btn-control select-idioma">
       <option value="es">ES</option>
       <option value="en">EN</option>
     </select>
-  </div>
+  </nav>
 
   <main class="main-wrapper">
     
     <header class="hero">
       
-      <h1 data-i18n="titulo">DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span></h1>
+      <h1 data-i18n="titulo_index">DESCUBRE HISTORIAS <br> <span class="highlight">SIN LÍMITES</span></h1>
       <p class="titulo" data-i18n="subtitulo">Miles de películas y series para ver cuando quieras</p>
       
       <nav class="features">
@@ -75,6 +77,7 @@
 
   <script>
     // Lógica de visibilidad
+        // Lógica de visibilidad
     function mostrarLogin() {
       document.getElementById("login").classList.remove("oculto");
       document.getElementById("registro").classList.add("oculto");

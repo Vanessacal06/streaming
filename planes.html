@@ -14,7 +14,7 @@
 <body>
 
   <!-- BARRA UTILIDADES -->
-  <div class="util-bar">
+  <nav class="util-bar" aria-label="Utilidades globales">
     <select id="selector-region" class="util-btn selector-region" onchange="cambiarRegion(this.value)">
       <option value="CO">🇨🇴 COP</option>
       <option value="US">🇺🇸 USD</option>
@@ -32,55 +32,56 @@
     </button>
     <button class="util-btn" onclick="abrirPerfil()">👤 <span id="txt-perfil">Mi Perfil</span></button>
     <button class="util-btn btn-logout" onclick="cerrarSesion()">🚪 Salir</button>
-  </div>
+  </nav>
 
   <!-- HERO -->
+    <!-- HERO -->
   <header class="hero">
-    <h1 id="txt-elegir">ELIGE TU EXPERIENCIA</h1>
-    <p>Streaming ilimitado con calidad premium, historias épicas y una experiencia futurista.</p>
+    <h1 id="txt-elegir" data-i18n="elegirPlan">ELIGE TU EXPERIENCIA</h1>
+    <p data-i18n="elegirPlan_sub">Streaming ilimitado con calidad premium, historias épicas y una experiencia futurista.</p>
   </header>
 
   <!-- PLANES -->
   <section class="planes-wrapper">
-    <p class="planes-title">PLANES DISPONIBLES</p>
+    <p class="planes-title" data-i18n="planes_disponibles">PLANES DISPONIBLES</p>
     <article class="planes-container" id="planes"></article>
   </section>
 
   <!-- MODAL CARRITO -->
-  <div class="modal-overlay oculto" id="modal-carrito">
-    <div class="modal-box">
+  <section class="modal-overlay oculto" id="modal-carrito" role="dialog" aria-modal="true">
+    <section class="modal-box">
       <button class="modal-close" onclick="cerrarCarrito()">✕</button>
-      <h3>🛒 <span>Carrito de compra</span></h3>
-      <div class="carrito-item">
-        <div>
-          <div class="carrito-item-nombre" id="carrito-plan-nombre">—</div>
-          <div style="font-size:12px; color:var(--text3)">Suscripción mensual</div>
-        </div>
-        <div class="carrito-item-precio" id="carrito-plan-precio">—</div>
-      </div>
-      <p style="margin: 20px 0 14px; font-size:13px; color:var(--text2); font-weight:600; letter-spacing:1px;">
+      <h3 data-i18n="carrito_titulo">🛒 Carrito de compra</h3>
+      <section class="carrito-item">
+        <section>
+          <p class="carrito-item-nombre" id="carrito-plan-nombre">—</p>
+          <p style="font-size:12px; color:var(--text3)" data-i18n="suscripcion_mensual">Suscripción mensual</p>
+        </section>
+        <p class="carrito-item-precio" id="carrito-plan-precio">—</p>
+      </section>
+      <p style="margin: 20px 0 14px; font-size:13px; color:var(--text2); font-weight:600; letter-spacing:1px;" data-i18n="pago_simulado">
         DATOS DE PAGO (simulado)
       </p>
-      <input type="text" id="pago-nombre" placeholder="Nombre en la tarjeta" maxlength="40">
-      <input type="text" id="pago-numero" placeholder="1234 5678 9012 3456"
+      <input type="text" id="pago-nombre" data-i18n-ph="pago_nombre_ph" placeholder="Nombre en la tarjeta" maxlength="40">
+      <input type="text" id="pago-numero" data-i18n-ph="pago_numero_ph" placeholder="1234 5678 9012 3456"
              maxlength="19" oninput="formatearNumeroTarjeta(this)">
-      <div class="carrito-row">
-        <input type="text" id="pago-exp" placeholder="MM/AA"
+      <section class="carrito-row">
+        <input type="text" id="pago-exp" data-i18n-ph="pago_exp_ph" placeholder="MM/AA"
                maxlength="5" oninput="formatearExpiracion(this)">
-        <input type="text" id="pago-cvv" placeholder="CVV" maxlength="4">
-      </div>
-      <button onclick="procesarPago()" style="margin-top:10px">💳 PAGAR AHORA</button>
-    </div>
-  </div>
+        <input type="text" id="pago-cvv" data-i18n-ph="pago_cvv_ph" placeholder="CVV" maxlength="4">
+      </section>
+      <button onclick="procesarPago()" style="margin-top:10px" data-i18n="pagar_ahora">💳 PAGAR AHORA</button>
+    </section>
+  </section>
 
   <!-- MODAL PERFIL -->
-  <div class="modal-overlay oculto" id="modal-perfil">
-    <div class="modal-box">
+  <section class="modal-overlay oculto" id="modal-perfil" role="dialog" aria-modal="true">
+    <section class="modal-box">
       <button class="modal-close" onclick="cerrarPerfil()">✕</button>
       <h3>👤 Mi Perfil</h3>
-      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
-    </div>
-  </div>
+      <section id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></section>
+    </section>
+  </section>
 
   <script src="./planes.js"></script>
   <script>

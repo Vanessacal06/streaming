@@ -21,15 +21,15 @@
   <header class="navbar">
     <section class="logo-container">
       <a href="peliculas.html">
-        
+        <!-- Logo o imagen aquí si lo deseas -->
       </a>
       <h1>VELORA</h1>
     </section>
-    <div class="navbar-controls">
+    <nav class="navbar-controls" aria-label="Controles de usuario">
       <button class="util-btn" id="btn-tema" onclick="toggleTema()">☀️ Claro</button>
       <button class="util-btn" onclick="abrirPerfil()">👤</button>
       <button class="util-btn btn-logout" onclick="cerrarSesionDetalle()">🚪</button>
-    </div>
+    </nav>
   </header>
 
   <!-- CONTENIDO PRINCIPAL -->
@@ -46,41 +46,42 @@
     </section>
 
     <!-- Sección de Calificar y Comentar -->
+        <!-- Sección de Calificar y Comentar -->
     <section class="calificar-section">
-      <h2>Califica y Comenta</h2>
+      <h2 data-i18n="califica_comenta">Califica y Comenta</h2>
       
-      <div class="estrellas-input" id="estrellas-input">
+      <section class="estrellas-input" id="estrellas-input" aria-label="Selector de estrellas">
         <span data-val="1">☆</span>
         <span data-val="2">☆</span>
         <span data-val="3">☆</span>
         <span data-val="4">☆</span>
         <span data-val="5">☆</span>
-      </div>
+      </section>
       <p id="estrellas-error" style="color:#ff4444;font-size:13px;display:none;">Selecciona al menos 1 estrella</p>
 
-      <textarea id="comentario-input" placeholder="Escribe tu comentario aquí... (opcional)"></textarea>
+      <textarea id="comentario-input" data-i18n-ph="comentario_ph" placeholder="Escribe tu comentario aquí... (opcional)"></textarea>
       
-      <button onclick="enviarCalificacion()" class="btn-cyan">ENVIAR CALIFICACIÓN</button>
+      <button onclick="enviarCalificacion()" class="btn-cyan" data-i18n="enviar_calif">ENVIAR CALIFICACIÓN</button>
     </section>
 
     <!-- Lista de Comentarios -->
     <section class="comentarios-section">
-      <h2>Opiniones de los usuarios</h2>
-      <div id="lista-comentarios">
+      <h2 data-i18n="opiniones">Opiniones de los usuarios</h2>
+      <section id="lista-comentarios" aria-label="Comentarios de usuarios">
         <!-- Se llena con JS -->
-      </div>
+      </section>
     </section>
 
   </main>
 
   <!-- MODAL PERFIL -->
-  <div class="modal-overlay oculto" id="modal-perfil">
-    <div class="modal-box">
+  <section class="modal-overlay oculto" id="modal-perfil" role="dialog" aria-modal="true">
+    <section class="modal-box">
       <button class="modal-close" onclick="cerrarPerfil()">✕</button>
       <h3>👤 Mi Perfil</h3>
-      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
-    </div>
-  </div>
+      <section id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></section>
+    </section>
+  </section>
 
   <script>
     // Supabase global para esta página

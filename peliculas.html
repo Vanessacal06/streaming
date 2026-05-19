@@ -19,19 +19,19 @@
     <source src="./video.mp4" type="video/mp4">
   </video>
 
-    <header class="navbar">
+  <header class="navbar">
     <section class="logo-container">
       <img src="./logo streaming.jpeg" alt="Logo" class="logo">
       <h1>VELORA</h1>
     </section>
 
-    <div id="weather-widget" title="Clima actual">
+    <aside id="weather-widget" title="Clima actual" aria-label="Widget del clima">
       <img id="weather-icon" src="" alt="clima">
       <span id="weather-temp">...</span>
       <span id="weather-city">Cargando...</span>
-    </div>
+    </aside>
 
-    <div class="navbar-controls">
+    <nav class="navbar-controls" aria-label="Controles de usuario">
       <select id="selector-region" class="util-btn selector-region" onchange="cambiarRegion(this.value)">
         <option value="CO">🇨🇴 COP</option>
         <option value="US">🇺🇸 USD</option>
@@ -49,26 +49,26 @@
       </button>
       <button class="util-btn" onclick="abrirPerfil()">👤</button>
       <button class="util-btn btn-logout" onclick="cerrarSesion()">🚪</button>
-    </div>
+    </nav>
   </header>
 
-  <main class="main-controls">
+    <main class="main-controls">
     <section class="search-filter-group">
       <section class="buscador-box">
-        <input type="text" id="buscador" placeholder="Buscar películas o series...">
+        <input type="text" id="buscador" data-i18n-ph="buscar" placeholder="Buscar películas o series...">
         <button onclick="buscarPeliculas()">BUSCAR</button>
       </section>
       <section class="filtro-box">
         <select id="filtroGenero" onchange="filtrarGeneroSelect()">
-          <option value="Todos">Todas las categorías</option>
-          <option value="Acción">Acción</option>
-          <option value="Drama">Drama</option>
-          <option value="Comedia">Comedia</option>
-          <option value="Terror">Terror</option>
-          <option value="Romance">Romance</option>
-          <option value="Ciencia ficción">Ciencia ficción</option>
-          <option value="Animación">Animación</option>
-          <option value="Aventura">Aventura</option>
+          <option value="Todos" data-i18n="todasCat">Todas las categorías</option>
+          <option value="Acción" data-i18n="accion">Acción</option>
+          <option value="Drama" data-i18n="drama">Drama</option>
+          <option value="Comedia" data-i18n="comedia">Comedia</option>
+          <option value="Terror" data-i18n="terror">Terror</option>
+          <option value="Romance" data-i18n="romance">Romance</option>
+          <option value="Ciencia ficción" data-i18n="ciencia_ficcion">Ciencia ficción</option>
+          <option value="Animación" data-i18n="animacion">Animación</option>
+          <option value="Aventura" data-i18n="aventura">Aventura</option>
         </select>
       </section>
     </section>
@@ -78,16 +78,16 @@
   <section class="contenedor" id="peliculas"></section>
 
   <footer>
-    <p>© 2026 VELORA — Experiencia Futurista</p>
+    <p data-i18n="footer">© 2026 VELORA — Experiencia Futurista</p>
   </footer>
 
-  <div class="modal-overlay oculto" id="modal-perfil">
-    <div class="modal-box">
+  <section class="modal-overlay oculto" id="modal-perfil" role="dialog" aria-modal="true">
+    <section class="modal-box">
       <button class="modal-close" onclick="cerrarPerfil()">✕</button>
       <h3>👤 Mi Perfil</h3>
-      <div id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></div>
-    </div>
-  </div>
+      <section id="perfil-contenido"><p style="color:var(--text2)">Cargando...</p></section>
+    </section>
+  </section>
 
   <script>
     const supabaseClient = window.supabase.createClient(
@@ -116,16 +116,16 @@
         : (txt.sinTarjeta || "Sin tarjeta");
 
       c.innerHTML = `
-        <div class="perfil-dato"><span>Nombre</span><span>${perfil.nombre || "—"}</span></div>
-        <div class="perfil-dato"><span>Email</span><span>${perfil.email || user.email}</span></div>
-        <div class="perfil-dato"><span>${txt.planActivo || "Plan"}</span><span>${perfil.tipo_suscripcion || "—"}</span></div>
-        <div class="perfil-dato"><span>${txt.tarjetaGuardada || "Tarjeta"}</span><span>${tarjeta}</span></div>
-        ${perfil.id_suscripcion ? `<div class="badge-plan">${perfil.tipo_suscripcion}</div>` : ""}
+        <p class="perfil-dato"><span>Nombre</span><span>${perfil.nombre || "—"}</span></p>
+        <p class="perfil-dato"><span>Email</span><span>${perfil.email || user.email}</span></p>
+        <p class="perfil-dato"><span>${txt.planActivo || "Plan"}</span><span>${perfil.tipo_suscripcion || "—"}</span></p>
+        <p class="perfil-dato"><span>${txt.tarjetaGuardada || "Tarjeta"}</span><span>${tarjeta}</span></p>
+        ${perfil.id_suscripcion ? `<span class="badge-plan">${perfil.tipo_suscripcion}</span>` : ""}
       `;
     }
     window.cargarDatosPerfil = cargarDatosPerfil;
 
-        document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       const idiomaBtn = document.getElementById("txt-idioma-btn");
       if (idiomaBtn) idiomaBtn.textContent = window.VELORA_IDIOMA === "es" ? "EN" : "ES";
       
